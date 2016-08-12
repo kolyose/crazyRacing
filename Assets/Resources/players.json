@@ -1,0 +1,11 @@
+{
+"players": 
+	[
+		{"id":1, "name":"Player 1", "character":{"pictureId":1}},
+		{"id":2, "name":"Player 2", "character":{"pictureId":1}},
+		{"id":3, "name":"Player 3", "character":{"pictureId":1}},
+		{"id":4, "name":"Player 4", "character":{"pictureId":1}},
+		{"id":5, "name":"Player 5", "character":{"pictureId":1}},
+		{"id":6, "name":"Player 6", "character":{"pictureId":1}}
+	]	
+}

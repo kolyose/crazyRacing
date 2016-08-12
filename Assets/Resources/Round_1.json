@@ -1,0 +1,11 @@
+{
+"results": 
+	[
+		{"playerId":1, "place":1, "milestones":[{"x":3, "y":0, "s":1}]},
+		{"playerId":2, "place":2, "milestones":[{"x":3, "y":1, "s":2}, {"x":3, "y":2, "s":2}]},
+		{"playerId":3, "place":3, "milestones":[{"x":2, "y":2, "s":1}, {"x":2, "y":3, "s":1}, {"x":3, "y":3, "s":1}]},
+		{"playerId":4, "place":4, "milestones":[{"x":4, "y":3, "s":2}, {"x":4, "y":4, "s":2}]},
+		{"playerId":5, "place":5, "milestones":[{"x":3, "y":4, "s":1}]},
+		{"playerId":6, "place":6, "milestones":[{"x":5, "y":5, "s":1}]}
+	]	
+}
