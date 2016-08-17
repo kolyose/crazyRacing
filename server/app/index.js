@@ -1,46 +1,21 @@
 "use strict";
 
-import Koa from 'koa';
-import IO from 'koa-socket';
-import Debug from 'debug';
-import route from 'koa-route';
+import koaFactory from './koaFactory';
+//import ioDecorator from './koaSocketDecorator';
+import ioDecorator from './socketIODecorator';
+import config from './../config';
+import Debug from './../debug';
 
 async function main(){
-    const debug = new Debug('app');
-    const app = new Koa();
-    const io = new IO();
-    io.attach(app);
+    try {
+        const debug = Debug('app');
 
-    let connections = [];
-
-    app.use(route.head('/', async (ctx, next) => {
-        ctx.status = 200;
-    }));
-
-    app.use(route.post('/socket.io', async (ctx, next) => {
-        debug('connection!!!');
-        console.log("connection");
-    }));
-
-
-    app.io.on('connection', (ctx, socket) => {
-        connections.push(socket);
-        debug('connection!!!');
-        console.log("connection");
-
-        socket.on('data', (ctx, data) => {
-            debug(`data {%s}`, data);
-            console.log("data received: " + data.toString());
-        });
-    })
-
-    app._io.on('connection', (ctx, socket) => {
-        connections.push(socket);
-        debug('connection!!!');
-        console.log("connection");
-    })
-
-    return app;
+        let app = await koaFactory();
+        app = await ioDecorator(app);
+        app.listen(config.port, () => { debug(`Server listening on port ${config.port}`);});
+    } catch (err) {
+        //TODO: add logger here
+    }
 }
 
-module.exports = main();
+module.exports = main;

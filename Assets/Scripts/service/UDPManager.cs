@@ -1,14 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.Networking;
 using System;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Reflection;
 
 public class UDPManager : MonoBehaviour {
 

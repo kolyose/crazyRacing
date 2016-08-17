@@ -1,8 +1,6 @@
 using UnityEngine;
-using System;
 using SocketIO;
-using SocketIOClient;
-using SocketIOClient.Messages;
+using System.Collections.Generic;
 
 public class MockDataService : MonoBehaviour, IDataService
 {
@@ -20,27 +18,21 @@ public class MockDataService : MonoBehaviour, IDataService
 
     public void Login(string name, string password)
     {
-        /* Client client = new Client("ws://127.0.0.1:3000");
-         client.Opened += SocketOpened;
-         client.SocketConnectionClosed += SocketConnectionClosed;
+        //Dictionary<string, string> data = new Dictionary<string, string>();
+        //data["message"] = "hello server!";
 
-         client.Connect();*/
+        //socket.Connect();
 
-        socket.Emit("Hello there!");
+        PlayerVO player = new PlayerVO {
+            id = 1,
+            name = "hello there"
+        };
+
+        socket.Emit("join", new JSONObject(JsonUtility.ToJson(player)));
 
         //TODO: change to real data from server
         Messenger<bool>.Broadcast(ServerCommand.LOGIN, true);
-    }
-
-    private void SocketOpened(object sender, EventArgs e)
-    {
-        Debug.Log("SOCKET OPENED");
-    }
-
-    private void SocketConnectionClosed(object sender, EventArgs e)
-    {
-        Debug.Log("SOCKET CLOSED");
-    }
+    }    
 
     public void InitGame(CharacterVO characterVO)
     {
