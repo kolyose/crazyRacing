@@ -46,12 +46,12 @@ public class DataService : MonoBehaviour, IDataService
 
     private void OnAddPlayers(SocketIOEvent evt)
     {
-        Debug.Log(string.Format("[name: {0}, data: {1}]", evt.name, evt.data));
+        Debug.Log("ADD_PLAYERS: " + evt.data);
     }
 
     private void OnStartGame(SocketIOEvent evt)
     {
-        Debug.Log(string.Format("[name: {0}, data: {1}]", evt.name, evt.data));
+        Debug.Log("START_GAME: " + evt.data);
     }
 
     public void SendUserActions(UserActionsVO actions)

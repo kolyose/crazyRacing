@@ -21,14 +21,25 @@ export default (function(){
         addPublicRoom(roomID, maxClients=MAX_ROOM_PLAYERS, clients=[]){
             const newRoom = new RoomController(roomID, maxClients, clients);
             this.publicRooms.push(newRoom);
+
+            debug(`addPublicRoom -> roomID ${roomID}`);
+            debug(`addPublicRoom -> newRoom ${newRoom}`);
+
             return newRoom;
         }
 
         joinClientToAvailablePublicRoom(client){
             const rooms = this.publicRooms;
             let room = rooms[rooms.length-1];
+
+            debug(`joinClientToAvailablePublicRoom -> room 1 ${room}`);
+
             if (!rooms.length || room.isFull){
-                room = this.addPublicRoom(client.id).addClient(client);
+                room = this.addPublicRoom(client.id);
+                room.addClient(client);
+
+                debug(`joinClientToAvailablePublicRoom -> room 2 ${room}`);
+
             } else {
                 room.addClient(client);
             }

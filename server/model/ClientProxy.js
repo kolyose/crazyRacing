@@ -47,13 +47,20 @@ export default (function(){
             debug(`joinToRoom->room: ${room}`);
 
             //notify other players in the room about new player joined
-            this.socket.to(room.id).emit(ADD_PLAYERS, {data: [this.playerVO]});
+            let data = this.playerVO;
+            debug(`data ${data}`);
+            //debug(`player name: ${this.playerVO.name} player id: ${this.playerVO.id}`)
+            this.socket.to(room.id).emit(ADD_PLAYERS, {data:"HELLO"});
 
             //join the player within io engine
             this.socket.join(room.id);
 
+            data = [].map.call(room.clients, client => {return client.playerVO;});
+            debug(`data for new player: ${data}`)
+
+
             //notify the player about other players already joined to the room (including himself)
-            this.socket.emit(ADD_PLAYERS, {data: room.clients.map(client => {return client.playerVO})});
+            this.socket.emit(ADD_PLAYERS, {"data":"GOOD BYE"});
 
             if (room.isFull){
                 this.socket.to(room.id).emit(START_GAME);

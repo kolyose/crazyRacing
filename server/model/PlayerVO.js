@@ -19,6 +19,10 @@ export default (function(){
         get name(){
             return _name.get(this);
         }
+
+        toString(){
+            return JSON.stringify({id:this.id, name:this.name});
+        }
     }
 
     return PlayerVO;

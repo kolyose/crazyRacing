@@ -35,7 +35,7 @@ export default (function (){
 
         addClient(newClient){
             if (this.isFull) return;
-            _clients.set(this, this.clients.push(newClient));
+            _clients.set(this, [].push.call(this.clients, newClient));
         }
 
         removeClient(client){
