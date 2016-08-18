@@ -1,0 +1,24 @@
+Application {
+  domain: null,
+  _events: { error: [Function: onerror] },
+  _eventsCount: 1,
+  _maxListeners: undefined,
+  proxy: false,
+  middleware: [],
+  subdomainOffset: 2,
+  env: 'development',
+  context:
+   { rooms: [],
+     io:
+      Server {
+        nsps: [Object],
+        _path: '/socket.io',
+        _serveClient: true,
+        _adapter: [Function: Adapter],
+        _origins: '*:*',
+        sockets: [Object],
+        eio: [Object],
+        httpServer: [Object],
+        engine: [Object] } },
+  request: {},
+  response: {} }

@@ -65,6 +65,11 @@ public class GameManager : MonoBehaviour {
         dataService.Login(login, password);
     }
 
+    public void SaveUserData(PlayerVO playerVO)
+    {
+        mainModel.User = playerVO;
+    }
+
     public void OnAddPlayersCommand(PlayerVO[] players)
     {
         mainModel.AddPlayers(players);
@@ -90,9 +95,9 @@ public class GameManager : MonoBehaviour {
         screensManager.HideLoaderScreen();
     }
 
-    public void InitGame()
+    public void JoinRoom(string roomID)
     {
-        dataService.InitGame(mainModel.GetActiveCharacterVO());
+        dataService.JoinRoom(roomID, mainModel.User);
     }
 
     public void InitRoundData(RoundResultVO[] results)

@@ -9,8 +9,8 @@ public class MainModel : MonoBehaviour
     public uint FieldWidth = 6;
     public float MovingSpeed = 1.0f;
 
-    private PlayerVO  _userVO;
-    public PlayerVO[]  RoundPlayers {get; private set;}
+    public PlayerVO User {get; set; }
+    public PlayerVO[] RoundPlayers {get; private set;}
 
     public Dictionary<PlayerVO, List<MilestoneVO>> MilestonesByPlayer { get; set; }
 

@@ -1,6 +1,5 @@
 using UnityEngine;
 using SocketIO;
-using System.Collections.Generic;
 
 public class MockDataService : MonoBehaviour, IDataService
 {
@@ -17,38 +16,41 @@ public class MockDataService : MonoBehaviour, IDataService
     }
 
     public void Login(string name, string password)
-    {
-        //Dictionary<string, string> data = new Dictionary<string, string>();
-        //data["message"] = "hello server!";
-
-        //socket.Connect();
-
-        PlayerVO player = new PlayerVO {
-            id = 1,
-            name = "hello there"
-        };
-
-        socket.Emit("join", new JSONObject(JsonUtility.ToJson(player)));
-
+    {     
         //TODO: change to real data from server
         Messenger<bool>.Broadcast(ServerCommand.LOGIN, true);
     }    
 
-    public void InitGame(CharacterVO characterVO)
+    public void JoinRoom(string roomID, PlayerVO playerVO)
     {
-        //TODO: implement functionality:
-            //send user's data to server
-            //wait for commands from server: 
-                //ServerCommand.ADD_PLAYERS
-                //ServerCommand.REMOVE_PLAYERS
-                //ServerCommand.START_GAME
-         
-        string playersRawData = Resources.Load<TextAsset>("players").text;
+        //mock data
+        /*string playersRawData = Resources.Load<TextAsset>("players").text;
         Messenger<PlayerVO[]>.Broadcast(ServerCommand.ADD_PLAYERS, dataParser.GetPlayersData(playersRawData));
 
         string initialGameData = getRoundDataFromJson(_currentRoundNumber);
         Messenger<RoundResultVO[]>.Broadcast(ServerCommand.START_GAME, dataParser.GetRoundResultsData(initialGameData));
         _currentRoundNumber++;
+        */
+
+        //TODO: implement functionality:
+        //send user's data to server
+        //wait for commands from server: 
+        //ServerCommand.ADD_PLAYERS
+        //ServerCommand.REMOVE_PLAYERS
+        //ServerCommand.START_GAME
+
+        //Dictionary<string, string> data = new Dictionary<string, string>();
+        //data["message"] = "hello server!";
+
+        //socket.Connect();
+
+        JoinRoomCommandVO commandVO = new JoinRoomCommandVO
+        {
+            roomID = name,
+            playerVO = playerVO
+        };
+
+        socket.Emit(ServerCommands.JOIN_ROOM, new JSONObject(JsonUtility.ToJson(commandVO)));
     }
     
     public void SendUserActions(UserActionsVO actions)

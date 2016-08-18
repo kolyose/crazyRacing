@@ -8,12 +8,6 @@ export default async function (app){
     const http = Http.Server(app.callback());
     const io = IO(http);
     app.context.io = io;
-
     io.on('connection', connectionHandler.bind(app));
-
-    io.on('data', data => {
-        "use strict";
-    });
-
     return http;
 }

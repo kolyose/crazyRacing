@@ -19,23 +19,24 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     public void OnLoginDataReady(string name, string password)
     {
          Messenger<string, string>.RemoveListener(ModelEvent.DATA_READY, OnLoginDataReady);
-         Messenger<bool>.AddListener(ServerCommand.LOGIN, OnLoginCommand);
+         Messenger<PlayerVO>.AddListener(ServerCommand.LOGIN, OnLoginCommand);
 
         _gameManager.OnLoginDataReady();
         _gameManager.Login(name, password);
     }
 
-    public void OnLoginCommand(bool loginSuccessful)
+    public void OnLoginCommand(PlayerVO playerVO)
     {
-        Messenger<bool>.RemoveListener(ServerCommand.LOGIN, OnLoginCommand);
+        Messenger<PlayerVO>.RemoveListener(ServerCommand.LOGIN, OnLoginCommand);
 
-        if (loginSuccessful)
+        if (playerVO != null)
         {
-            InitGame();
+            _gameManager.SaveUserData(playerVO);
+            JoinRoom();
         }
     }
 
-    public void InitGame()
+    public void JoinRoom(string roomID=null)
     {
         Messenger<PlayerVO[]>.AddListener(ServerCommand.REMOVE_PLAYERS, OnRemovePlayersCommand);
         Messenger<PlayerVO[]>.AddListener(ServerCommand.ADD_PLAYERS, OnAddPlayersCommand);
@@ -43,7 +44,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         Messenger<RoundResultVO[]>.AddListener(ServerCommand.ROUND_RESULTS, OnRoundResultsCommand);
 
         _gameManager.ShowLoader();
-        _gameManager.InitGame();
+        _gameManager.JoinRoom(roomID);
     }
 
     private void OnAddPlayersCommand(PlayerVO[] players)
