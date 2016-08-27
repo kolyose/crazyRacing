@@ -1,62 +1,55 @@
-"use strict";
+"use strict"
 
-import {MAX_ROOM_PLAYERS} from './constants';
-import RoomController from './RoomController';
-import Debug from './../debug';
+import {MAX_ROOM_PLAYERS, ROOM_IS_FULL} from './constants'
+import RoomController from './RoomController'
+import GameplayController from './GameplayController'
+import Debug from './../debug'
 
-export default (function(){
+let _publicRooms = new WeakMap()
+const debug = new Debug("CR:RoomsManager")
 
-    let _publicRooms = new WeakMap();
-    const debug = new Debug("RoomsManager");
-
-    class RoomsManager{
-        constructor(){
-            _publicRooms.set(this, []/*array of RoomVO*/);
-        }
-
-        get publicRooms(){
-            return _publicRooms.get(this);
-        }
-
-        addPublicRoom(roomID, maxClients=MAX_ROOM_PLAYERS, clients=[]){
-            const newRoom = new RoomController(roomID, maxClients, clients);
-            this.publicRooms.push(newRoom);
-
-            debug(`addPublicRoom -> roomID ${roomID}`);
-            debug(`addPublicRoom -> newRoom ${newRoom}`);
-
-            return newRoom;
-        }
-
-        joinClientToAvailablePublicRoom(client){
-            const rooms = this.publicRooms;
-            let room = rooms[rooms.length-1];
-
-            debug(`joinClientToAvailablePublicRoom -> room 1 ${room}`);
-
-            if (!rooms.length || room.isFull){
-                room = this.addPublicRoom(client.id);
-                room.addClient(client);
-
-                debug(`joinClientToAvailablePublicRoom -> room 2 ${room}`);
-
-            } else {
-                room.addClient(client);
-            }
-            return room;
-        }
-
-        joinClientToRoomByID(roomID, client){
-            if (!roomID || roomID === ''){ //if roomID is undefined it means we need to add the client to public room
-                debug(`joinClientToRoomByID`);
-                return this.joinClientToAvailablePublicRoom(client);
-            }
-
-            //if roomID is defined it means we need to add the client to private room
-            //TODO: add private rooms functionality
-        }
+class RoomsManager{
+    constructor(){
+        _publicRooms.set(this, []/*array of RoomVO*/)
     }
 
-    return RoomsManager;
+    get publicRooms(){
+        return _publicRooms.get(this)
+    }
 
-})();
+    addPublicRoom(roomID, maxClients=MAX_ROOM_PLAYERS, clients=[]){
+        const newRoom = new RoomController(roomID, maxClients, clients)
+        newRoom.on(ROOM_IS_FULL, this._startGameInRoom)
+        this.publicRooms.push(newRoom)
+        return newRoom
+    }
+
+    _startGameInRoom(room) {
+        let gameplayController = new GameplayController(room)
+        gameplayController.init()
+        gameplayController.start()
+    }
+
+    joinClientToAvailablePublicRoom(client){
+        const rooms = this.publicRooms
+        let room = rooms[rooms.length-1]
+
+        if (!rooms.length || room.isFull){
+            room = this.addPublicRoom(client.id)
+        }
+
+        room.addClient(client)
+        return room
+    }
+
+    joinClientToRoomByID(roomID, client){
+        if (!roomID || roomID === ''){ //if roomID is undefined it means we need to add the client to public room
+           return this.joinClientToAvailablePublicRoom(client)
+        }
+
+        //if roomID is defined it means we need to add the client to private room
+        //TODO: add private rooms functionality
+    }
+}
+
+export default new RoomsManager()

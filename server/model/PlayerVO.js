@@ -20,8 +20,8 @@ export default (function(){
             return _name.get(this);
         }
 
-        toString(){
-            return JSON.stringify({id:this.id, name:this.name});
+        toObject(){
+            return {id:this.id, name:this.name};
         }
     }
 

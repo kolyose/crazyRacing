@@ -7,7 +7,7 @@ import Debug from './../debug';
 
 async function main(){
     try {
-        const debug = Debug('app');
+        const debug = Debug('CR:index');
         let app = await koaFactory();
         app = await ioDecorator(app);
         app.listen(config.port, () => { debug(`Server listening on port ${config.port}`);});

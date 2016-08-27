@@ -1,5 +1,5 @@
 import Debug from './../../debug';
-import {JOIN_ROOM, USER_ACTIONS} from './../../model/constants';
+import {JOIN_ROOM, PLAYER_ACTIONS} from './../../model/constants';
 import PlayerVO from './../../model/PlayerVO';
 import ClientProxy from './../../model/ClientProxy';
 
@@ -26,17 +26,16 @@ export default function (socket){
     //or
     //socket.adapter.sids
 
-    const debug = new Debug('connectionHandler');
+    const debug = new Debug('CR:connectionHandler');
     debug(`CONNECTED ${socket}`);
 
     socket.on(JOIN_ROOM, data => {
         debug(`JOIN_ROOM ${data}`);
-        //console.dir(data);
-        const client = new ClientProxy(socket, new PlayerVO(data.playerVO), this.context);
+        const client = new ClientProxy(socket, new PlayerVO(data.playerVO));
         client.joinToRoom(data.roomID);
     });
 
-    socket.on(USER_ACTIONS, data => {
+    socket.on(PLAYER_ACTIONS, data => {
         debug(`USER_ACTIONS ${data}`);
 
     });
