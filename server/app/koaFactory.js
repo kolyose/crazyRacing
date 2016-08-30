@@ -7,6 +7,6 @@ import route from 'koa-route';
 export default async function(){
     const debug = Debug('CR:koaApp');
     const app = new Koa();
-    app.context.clients = new Map();
+    app.context.clients = [];
     return app;
 }

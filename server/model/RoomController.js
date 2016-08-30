@@ -2,7 +2,7 @@
 
 import Debug from './../debug';
 import EventEmitter from 'events';
-import {ROOM_IS_FULL, START_GAME} from './constants';
+import {ROOM_IS_FULL, START_GAME, ADD_PLAYERS} from './constants';
 
 const debug = new Debug('CR:RoomController');
 
@@ -47,19 +47,35 @@ export default (function (){
         addClient(newClient){
             if (this.isFull) return;
 
+            this._notifyExistingClientsAboutNewOne(newClient);
+
             let clients = this.clients;
             clients.push(newClient);
             _clients.set(this, clients);
 
+            this._notifyNewClientAboutExistingOnes(newClient);
+
             if (this.isFull) {
-                debug(`emitting ROOM_IS_FULL`);
+                debug(`ROOM_IS_FULL`)
                 this.emit(ROOM_IS_FULL, this);
             }
         }
 
-        /*startGame(){
-            this.clients[0].socket.to(this.id).emit(START_GAME)
-        }*/
+        _notifyExistingClientsAboutNewOne(newClient){
+            let data = {};
+            data.players = [newClient.playerVO.toObject()];
+            Array.prototype.forEach.call(this.clients, client => {
+                client.socket.emit(ADD_PLAYERS, {data});
+            });
+        }
+
+        _notifyNewClientAboutExistingOnes(newClient){
+            let data = {};
+            data.players = Array.prototype.map.call(this.clients, client => {
+                return client.playerVO.toObject();
+            });
+            newClient.socket.emit(ADD_PLAYERS, {data});
+        }
 
         removeClient(client){
             let clients = this.clients

@@ -2,8 +2,11 @@ import Debug from './../../debug';
 import {JOIN_ROOM, PLAYER_ACTIONS} from './../../model/constants';
 import PlayerVO from './../../model/PlayerVO';
 import ClientProxy from './../../model/ClientProxy';
+import RoomsManager from './../../model/RoomsManager';
 
 export default function (socket){
+
+    const _self = this;
 
     //to get an id use following:
     //socket.id
@@ -31,12 +34,10 @@ export default function (socket){
 
     socket.on(JOIN_ROOM, data => {
         debug(`JOIN_ROOM ${data}`);
+        //adding the player to a hash of active players (the ones have joined any rooms)
+        _self.context.clients.push(client);
         const client = new ClientProxy(socket, new PlayerVO(data.playerVO));
-        client.joinToRoom(data.roomID);
-    });
-
-    socket.on(PLAYER_ACTIONS, data => {
-        debug(`USER_ACTIONS ${data}`);
-
+        //client.joinToRoom(data.roomID);
+        const room = RoomsManager.joinClientToRoomByID(data.roomID, client);
     });
 }

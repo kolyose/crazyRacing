@@ -1,5 +1,8 @@
 "use strict";
 
+import Debug from './../debug';
+const debug = new Debug('CR:PlayerVO');
+
 export default (function(){
 
     let _id          = new WeakMap();
@@ -8,6 +11,7 @@ export default (function(){
 
     class PlayerVO{
         constructor({id, name}){
+            debug(`PlayerVO id=${id} name=${name}`);
             _id.set(this, id);
             _name.set(this, name);
         }
