@@ -26,12 +26,12 @@ public class SelectActionsScreenMediator : BaseScreenMediator
 
     public void OnUpClick()
     {
-        _userActionsVO.Direction.y = (_userActionsVO.Direction.y == 1) ? 0 : 1;
+        _userActionsVO.Direction = (_userActionsVO.Direction == 1) ? 0 : 1;
     }
 
     public void OnDownClick()
     {
-        _userActionsVO.Direction.y = (_userActionsVO.Direction.y == -1) ? 0 : -1;
+        _userActionsVO.Direction = (_userActionsVO.Direction == -1) ? 0 : -1;
     }
 
     public void OnSelectClick()

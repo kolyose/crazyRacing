@@ -1,9 +1,17 @@
 ﻿using UnityEngine;
 using SocketIO;
+using System.Collections.Generic;
 
 public class DataService : MonoBehaviour, IDataService
 {
+    [HideInInspector]
+    public IServerDataParser dataParser;
     public SocketIOComponent socket;
+
+    void Awake()
+    {
+        if (dataParser == null) dataParser = GetComponent<IServerDataParser>();
+    }
 
     public void Login(string name, string password)
     {
@@ -41,21 +49,36 @@ public class DataService : MonoBehaviour, IDataService
 
         socket.On(ServerCommand.ADD_PLAYERS, OnAddPlayers);
         socket.On(ServerCommand.START_GAME, OnStartGame);
+        socket.On(ServerCommand.ROUND_RESULTS, OnRoundResults);
         socket.Emit(ServerCommands.JOIN_ROOM, new JSONObject(JsonUtility.ToJson(commandVO)));
     }
 
     private void OnAddPlayers(SocketIOEvent evt)
     {
-        Debug.Log("ADD_PLAYERS: " + evt.data);
+        string playersRawData = evt.data["data"].ToString();
+        Debug.Log("ADD_PLAYERS: " + playersRawData);
+        PlayerVO[] players = dataParser.GetPlayersData(playersRawData);
+        Messenger<PlayerVO[]>.Broadcast(ServerCommand.ADD_PLAYERS, players);
     }
-
+    
     private void OnStartGame(SocketIOEvent evt)
     {
-        Debug.Log("START_GAME: " + evt.data);
+        string resultsRawData = evt.data["data"].ToString();
+        Debug.Log("START_GAME: " + resultsRawData);
+        RoundResultVO[] results = dataParser.GetRoundResultsData(resultsRawData);
+        Messenger<RoundResultVO[]>.Broadcast(ServerCommand.START_GAME, results);
+    }
+
+    private void OnRoundResults(SocketIOEvent evt)
+    {
+        string resultsRawData = evt.data["data"].ToString();
+        Debug.Log("ROUND_RESULTS: " + resultsRawData);
+        RoundResultVO[] results = dataParser.GetRoundResultsData(resultsRawData);
+        Messenger<RoundResultVO[]>.Broadcast(ServerCommand.ROUND_RESULTS, results);
     }
 
     public void SendUserActions(UserActionsVO actions)
     {
-       // Messenger<RoundResultVO[]>.Broadcast(ServerCommand.ROUND_RESULTS, dataParser.GetRoundResultsData(roundResultsData));
+        socket.Emit(ServerCommands.USER_ACTIONS, new JSONObject(JsonUtility.ToJson(actions)));
     }
 }

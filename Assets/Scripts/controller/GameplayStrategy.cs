@@ -20,6 +20,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     {
          Messenger<string, string>.RemoveListener(ModelEvent.DATA_READY, OnLoginDataReady);
          Messenger<PlayerVO>.AddListener(ServerCommand.LOGIN, OnLoginCommand);
+        //TODO: add error handling from login errors
 
         _gameManager.OnLoginDataReady();
         _gameManager.Login(name, password);
@@ -29,11 +30,12 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     {
         Messenger<PlayerVO>.RemoveListener(ServerCommand.LOGIN, OnLoginCommand);
 
-        if (playerVO != null)
-        {
-            _gameManager.SaveUserData(playerVO);
-            JoinRoom();
-        }
+        _gameManager.SaveUserData(playerVO);
+
+        //TODO: add functionality for characters selection
+        //TODO: add functionality for private rooms creation
+        //TODO: add functionality for joining to specific private rooms
+        JoinRoom();
     }
 
     public void JoinRoom(string roomID=null)

@@ -1,11 +1,11 @@
 {
 "results": 
 	[
-		{"playerId":1, "random":5, "milestones":[{"x":0, "y":0, "s":1}]},
-		{"playerId":2, "random":4, "milestones":[{"x":0, "y":1, "s":1}]},
-		{"playerId":3, "random":6, "milestones":[{"x":0, "y":2, "s":1}]},
-		{"playerId":4, "random":5, "milestones":[{"x":0, "y":3, "s":1}]},
-		{"playerId":5, "random":5, "milestones":[{"x":0, "y":4, "s":1}]},
-		{"playerId":6, "random":5, "milestones":[{"x":0, "y":5, "s":1}]}
-	]	
+		{"playerId":1, "distance":5, "milestones":[{"x":0, "y":0, "s":1}]},
+		{"playerId":2, "distance":4, "milestones":[{"x":0, "y":1, "s":1}]},
+		{"playerId":3, "distance":6, "milestones":[{"x":0, "y":2, "s":1}]},
+		{"playerId":4, "distance":5, "milestones":[{"x":0, "y":3, "s":1}]},
+		{"playerId":5, "distance":5, "milestones":[{"x":0, "y":4, "s":1}]},
+		{"playerId":6, "distance":5, "milestones":[{"x":0, "y":5, "s":1}]}
+	]
 }

@@ -7,7 +7,7 @@ using System.Collections;
 public class RoundResultVO
 {
     public string playerId;  
-    public uint random;
+    public uint distance;
     public uint place;
     public MilestoneVO[] milestones;    
 }
