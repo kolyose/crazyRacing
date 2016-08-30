@@ -97,14 +97,14 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
         //calculating target position and a distance to it
         Vector3 targetPosition = milestoneVO.position * CELL_SIZE;
-        float sqrRemainingDistance = (character.Position - targetPosition).sqrMagnitude;
+        float remainingDistance = (character.Position - targetPosition).magnitude;
 
         //updating position smoothly
-        while (Mathf.Round(sqrRemainingDistance) > 0)
+        while (Mathf.Round(remainingDistance) > 0)
         {
            Vector3 newPosition = Vector3.MoveTowards(character.Position, targetPosition, mainModel.MovingSpeed * milestoneVO.speed);          
            character.transform.position = newPosition;
-           sqrRemainingDistance = (character.transform.position - targetPosition).sqrMagnitude;
+            remainingDistance = (character.Position - targetPosition).magnitude;
            yield return null;
         }
 

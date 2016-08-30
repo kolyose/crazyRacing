@@ -5,11 +5,13 @@ public class JSONParser : MonoBehaviour, IServerDataParser
 {
     public PlayerVO[] GetPlayersData(string rawData)
     {
-       return JsonUtility.FromJson<PlayerVOArray>(rawData).players;
+        PlayerVO[] players = JsonUtility.FromJson<PlayerVOArray>(rawData).players;
+        return players;
     }
 
     public RoundResultVO[] GetRoundResultsData(string rawData)
     {
-        return JsonUtility.FromJson<RoundResultVOArray>(rawData).results;
+        RoundResultVO[] results = JsonUtility.FromJson<RoundResultVOArray>(rawData).results;
+        return results;
     }
 }

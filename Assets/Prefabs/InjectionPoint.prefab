@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldLength: 10
   FieldWidth: 6
-  MovingSpeed: 1
+  MovingSpeed: 8
 --- !u!114 &11430620
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -128,7 +128,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd8c4feffc206f14288cbe192207b47d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterPrefabs: []
+  characterPrefabs:
+  - {fileID: 121414, guid: 82fe4ae3882d8b249976ab35a91abd10, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
