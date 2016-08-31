@@ -16,17 +16,17 @@ public class InputController : MonoBehaviour, IInput {
 
 	public void OnBoostClick()
     {
-        _userActionsVO.Boost = !_userActionsVO.Boost;
+        _userActionsVO.boost = !_userActionsVO.boost;
     }
 
     public void OnUpClick()
     {
-        _userActionsVO.Direction = (_userActionsVO.Direction == 1) ? 0 : 1;
+        _userActionsVO.direction = (_userActionsVO.direction == 1) ? 0 : 1;
     }
 
     public void OnDownClick()
     {
-        _userActionsVO.Direction = (_userActionsVO.Direction == -1) ? 0 : -1;
+        _userActionsVO.direction = (_userActionsVO.direction == -1) ? 0 : -1;
     }
 
     public void OnDoneClick()

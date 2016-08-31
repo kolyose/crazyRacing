@@ -61,7 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FieldLength: 10
   FieldWidth: 6
-  MovingSpeed: 8
+  MovingSpeed: 4
 --- !u!114 &11430620
 MonoBehaviour:
   m_ObjectHideFlags: 1

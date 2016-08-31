@@ -3,12 +3,12 @@ using System.Collections;
 
 public class UserActionsVO
 {
-    public int Direction;
-    public bool Boost;
+    public int direction;
+    public bool boost;
 
     public UserActionsVO()
     {
-        Direction = 0;
-        Boost = false;
+        direction = 0;
+        boost = false;
     }
 }
