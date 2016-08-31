@@ -11,12 +11,20 @@ export default (function () {
             _boost.set(this, boost);
         }
 
+        set direction(value){
+            _direction.set(this, value);
+        }
+
         get direction(){
             return _direction.get(this);
         }
 
         get boost(){
             return _boost.get(this);
+        }
+
+        toString(){
+            return {direction: this.direction, boost: this.boost}.toString();
         }
     }
 

@@ -6,6 +6,7 @@ import EventEmitter from 'events';
 import Debug from  './../debug';
 
 const debug = new Debug('CR:GameplayController');
+const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 export default (function(){
 
@@ -39,21 +40,16 @@ export default (function(){
                 this._setPositionByPlayerId(client.playerVO.id, {x:0, y:Util.getRandomValueFromArray(raceTrackNumbers)});
 
                 client.socket.on(PLAYER_ACTIONS, async (data) => {
-                    debug(`PLAYER_ACTIONS`)
                     this._setActionsByPlayerId(client.playerVO.id, new PlayerActionsVO(data));
+                    debug(`PLAYER_ACTIONS`)
                     const counter = this._increaseReceivedActionsCounter();
-                    debug(`counter=${counter}`)
                     if (counter == this.room.maxClients){
                         let dataToCompute = this._getDataToCompute();
-                        debug(`dataToCompute: `, dataToCompute)
                         const milestonesByPlayerId = await ComputingService(dataToCompute);
-                        debug(`milestonesByPlayerId:`, milestonesByPlayerId)
                         this._updatePlayersPositions(milestonesByPlayerId);
                         this._resetRoundData();
                         const  roundResultsData = this._getRoundResultsData(milestonesByPlayerId);
-                        debug(`roundResultsData:`,roundResultsData)
                         this._broadcastEventToClients(ROUND_RESULTS, roundResultsData);
-
                     }
                 })
             }
@@ -67,6 +63,7 @@ export default (function(){
                 milestonesByPlayerId[playerId] = [position];
             }
             const initialData = this._getRoundResultsData(milestonesByPlayerId);
+           // debug(`START_GAME with initialData: `, initialData)
             this._broadcastEventToClients(START_GAME, initialData);
         }
 
@@ -130,39 +127,33 @@ export default (function(){
                     randomDistance = Math.floor(Math.random()*4) + 1;
                     break
                 }
-
                 case 1:{
                     randomDistance = Math.floor(Math.random()*3) + 2;
                     break
                 }
-
                 case 2:{
                     randomDistance = Math.floor(Math.random()*4) + 2;
                     break
                 }
-
                 case 3:{
                     randomDistance = Math.floor(Math.random()*3) + 3;
                     break
                 }
-
                 case 4:{
                     randomDistance = Math.floor(Math.random()*4) + 3;
                     break
                 }
-
                 case 5:{
                     randomDistance = Math.floor(Math.random()*3) + 4;
                     break
                 }
-                    default: randomDistance = 0;
+                default: randomDistance = 0;
             }
-
             return randomDistance;
         }
 
         _updatePlayersPositions(milestonesByPlayerId){
-            for (let playerId in milestonesByPlayerId){
+            for (let playerId in milestonesByPlayerId) if (hasOwnProperty.call(milestonesByPlayerId, playerId)) {
                 const milestones = milestonesByPlayerId[playerId];
                 const finalMilestone = milestones[milestones.length-1];
                 this._setPositionByPlayerId(playerId, {x:finalMilestone.x, y:finalMilestone.y});

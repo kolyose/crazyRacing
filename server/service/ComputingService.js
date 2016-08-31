@@ -7,6 +7,7 @@ export default function (data){
 
             const STEP = 1;
             const BOOST = 2;
+            const hasOwnProperty = Object.prototype.hasOwnProperty;
             let milestonesByPlayerId = {};
 
             //initialization of game field which is a two-dimensional array representing all possible positions for players
@@ -21,7 +22,7 @@ export default function (data){
 
             //setting players onto their positions on the field
             // and initializing in the same loop for optimization purpose
-            for (let playerId in data){
+            for (let playerId in data) if (hasOwnProperty.call(data, playerId)){
                 slotsPerRacetrack[data[playerId].position.y][data[playerId].position.x] = playerId;
                 milestonesByPlayerId[playerId] = [];
             }
@@ -32,7 +33,7 @@ export default function (data){
                 //we need to grab only BOOSTing players by priority: from the forward player of top racetrack
                 for (let racetrackIndex=0; racetrackIndex<FIELD_WIDTH; racetrackIndex++) {
                     for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
-                        let playerId = slotsPerRacetrack[racetrackIndex][slotIndex]
+                        let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
                         //if there is no player at current slot
                         //or the player doesn't have more distance to move
                         //or he didn't request boost
@@ -49,7 +50,7 @@ export default function (data){
                 //now we need to grab all players (including previously boosted ones) by the same priority
                  for (let racetrackIndex=0; racetrackIndex<FIELD_WIDTH; racetrackIndex++) {
                     for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
-                        let playerId = slotsPerRacetrack[racetrackIndex][slotIndex]
+                        let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
                         //if there is no player at current slot
                         //or the player doesn't have more distance to move
                         //then check next slot
@@ -62,12 +63,9 @@ export default function (data){
                 }
             }
 
-            //debug(`after while loop`)
-
-
             //debug(`milestonesByPlayerId:`, milestonesByPlayerId)
             //after milestones data filled we need to optimize it by removing identical milestones
-            for (let playerId in milestonesByPlayerId){
+            for (let playerId in milestonesByPlayerId) if (hasOwnProperty.call(milestonesByPlayerId, playerId)){
                // debug(`playerId: ${playerId}`)
                // debug(`oldMilestones:`,milestonesByPlayerId[playerId])
                 let oldMilestones = milestonesByPlayerId[playerId];
@@ -88,12 +86,8 @@ export default function (data){
                         newMilestones.push(oldMilestones[i+1]);
                     }
                 }
-
                 milestonesByPlayerId[playerId] = newMilestones;
             }
-
-
-           // debug(`after for loop`)
 
             resolve(milestonesByPlayerId);
 
@@ -101,6 +95,7 @@ export default function (data){
                 //if the player had requested shifting
                 //and nobody other takes the neighbour position
                 const targetRacetrackIndex = racetrackIndex + data[playerId].actions.direction;
+
                 if (data[playerId].actions.direction !== 0
                     && slotsPerRacetrack[targetRacetrackIndex] !== undefined
                     && slotsPerRacetrack[targetRacetrackIndex][slotIndex] === null)
@@ -108,8 +103,6 @@ export default function (data){
                     //then we can shift the player to the position
                     slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                     slotsPerRacetrack[targetRacetrackIndex][slotIndex] = playerId;
-
-                   // debug(`IF`)
 
                     milestonesByPlayerId[playerId].push({
                             x: slotIndex,
@@ -123,13 +116,11 @@ export default function (data){
                             s:(data[playerId].actions.boost ? 2 : 1)
                         });
 
-                    //do not forget to reset shifting request to avoid double shifting
+                     //do not forget to reset shifting request to avoid double shifting
                     data[playerId].actions.direction = 0;
                 }
                 else
                 {
-                   // debug(`ELSE`)
-
                     //in other case move player by 1 step forward if nobody other takes that position
                     let targetSlotIndex = slotIndex + 1;
                     if (!slotsPerRacetrack[racetrackIndex][targetSlotIndex]){
@@ -151,7 +142,7 @@ export default function (data){
 
             function getRemainingDistanceSum(data){
                 let sum=0;
-                for (let playerId in data){
+                for (let playerId in data) if (hasOwnProperty.call(data, playerId)){
                     sum = sum + data[playerId].distance;
                 }
                 return sum;
