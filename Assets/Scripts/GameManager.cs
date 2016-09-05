@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour {
 
     public void InitCharacters()
 	{
-        gameBoard.InitCharacters(mainModel.RoundPlayers);
+        gameBoard.InitCharacters(mainModel.RoundPlayers, mainModel.User);
 	}
     
     public void GetLoginData()

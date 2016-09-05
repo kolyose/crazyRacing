@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Character : MonoBehaviour {
 
+    public Material outlinedMaterial;
+
     public PlayerVO PlayerData {get; private set;}
     public Vector3 Position
     {
@@ -11,14 +13,24 @@ public class Character : MonoBehaviour {
     }
   
     public Vector3 Size { get; private set; }
-   
+
+    private SpriteRenderer _renderer;
+    private Material _defaultMaterial;
+
+    void Awake()
+    {
+        _renderer = GetComponent<SpriteRenderer>();
+        _defaultMaterial = _renderer.material;
+        Size = _renderer.bounds.size;
+    }
+
 	public void SetData(PlayerVO data)
     {
         PlayerData = data;
     }
 
-    void Awake()
+    public void displayOutline()
     {
-        Size = GetComponent<SpriteRenderer>().bounds.size;
+        _renderer.material = outlinedMaterial;
     }
 }

@@ -17,14 +17,18 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     private Character[] _characters;
     private float CELL_SIZE;
     private uint _charactersPositionsUpdated;
-
+    private Transform _charactersContainer;
+    private Transform _tilesContainer;
     private GameObject _selectActionsScreen;
 
     void Awake() 
     {
         if (mainModel == null) mainModel = GetComponent<MainModel>();
         if (camera == null) camera = GetComponent<PixelPerfectCamera>();
-        if (charactersFactory == null) charactersFactory = GetComponent<ICharactersFactory>();          
+        if (charactersFactory == null) charactersFactory = GetComponent<ICharactersFactory>();
+
+        _charactersContainer = viewContainer.transform.FindChild("Characters").transform;
+        _tilesContainer = viewContainer.transform.FindChild("Tiles").transform;
     }
 
   	public void InitializeBackground() {
@@ -44,24 +48,29 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                 positionY = CELL_SIZE * i;
 				
 				GameObject grassTileInstance = Instantiate(grassTile, new Vector3(positionX,positionY,0.0f), Quaternion.identity) as GameObject;
-                grassTileInstance.transform.SetParent(viewContainer.transform.FindChild("Tiles").transform);
+                grassTileInstance.transform.SetParent(_tilesContainer);
                 grassTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
 
             }
 		}
 	}
 
-    public void InitCharacters(PlayerVO[] roundMembers)
+    public void InitCharacters(PlayerVO[] roundMembers, PlayerVO user)
     {
         _characters = new Character[roundMembers.Length];
 
        for (int i = 0; i < roundMembers.Length; i++)
         {   
             Character character = charactersFactory.GetCharacter(roundMembers[i]);
-            character.transform.SetParent(viewContainer.transform.FindChild("Characters").transform);
+            character.transform.SetParent(_charactersContainer);
             Vector3 newPosition = mainModel.MilestonesByPlayer[roundMembers[i]][0].position;
             character.transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
             _characters[i] = character;
+
+            if (roundMembers[i].id == user.id)
+            {
+                character.displayOutline();
+            }
         }
     }
 
