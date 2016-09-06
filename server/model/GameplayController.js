@@ -45,10 +45,10 @@ export default (function(){
                     const counter = this._increaseReceivedActionsCounter();
                     if (counter == this.room.maxClients){
                         let dataToCompute = this._getDataToCompute();
-                        const milestonesByPlayerId = await ComputingService(dataToCompute);
-                        this._updatePlayersPositions(milestonesByPlayerId);
+                        const computedResults = await ComputingService(dataToCompute);
+                        this._updatePlayersPositions(computedResults);
                         this._resetRoundData();
-                        const  roundResultsData = this._getRoundResultsData(milestonesByPlayerId);
+                        const roundResultsData = this._getRoundResultsData(computedResults);
                         this._broadcastEventToClients(ROUND_RESULTS, roundResultsData);
                     }
                 })
@@ -57,12 +57,12 @@ export default (function(){
 
         start(){
             debug(`START`)
-            let milestonesByPlayerId = {};
+            let initialDataByPlayerId = {};
             for (let playerId of this.room.playersIds){
                 const position = this._getPositionByPlayerId(playerId);
-                milestonesByPlayerId[playerId] = [position];
+                initialDataByPlayerId[playerId].milestones = [position];
             }
-            const initialData = this._getRoundResultsData(milestonesByPlayerId);
+            const initialData = this._getRoundResultsData(initialDataByPlayerId);
            // debug(`START_GAME with initialData: `, initialData)
             this._broadcastEventToClients(START_GAME, initialData);
         }
@@ -154,9 +154,9 @@ export default (function(){
             return randomDistance;
         }
 
-        _updatePlayersPositions(milestonesByPlayerId){
-            for (let playerId in milestonesByPlayerId) if (hasOwnProperty.call(milestonesByPlayerId, playerId)) {
-                const milestones = milestonesByPlayerId[playerId];
+        _updatePlayersPositions(computedResults){
+            for (let playerId in computedResults) if (hasOwnProperty.call(computedResults, playerId)) {
+                const milestones = computedResults[playerId].milestones;
                 const finalMilestone = milestones[milestones.length-1];
                 this._setPositionByPlayerId(playerId, {x:finalMilestone.x, y:finalMilestone.y});
             }
