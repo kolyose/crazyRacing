@@ -67,16 +67,18 @@ export default (function(){
             this._broadcastEventToClients(START_GAME, initialData);
         }
 
-        _getRoundResultsData(milestonesByPlayerId){
+        _getRoundResultsData(computedResults){
+            //creating a final data structure for clients
             const data = {results:[]};
-            let resultPerPlayer;
-            for (let playerId of this.room.playersIds){
-                resultPerPlayer = {
-                    playerId,
-                    distance: this._getRandomDistanceByPlayerId(playerId),
-                    milestones: milestonesByPlayerId[playerId]
-                };
-                data.results.push(resultPerPlayer);
+            //and filling the data with final results per player
+            for (let playerId in computedResults) if (hasOwnProperty.call(computedResults, playerId)){
+                const playerResults = computedResults[playerId];
+                //if there is no place prop in player's results data meaning the player has not finished the race yet
+                //we need to decorate the data with random distance property for next round
+                if (!playerResults.place){
+                    playerResults.distance = this._getRandomDistanceByPlayerId(playerId)
+                }
+                data.results.push(playerResults);
             }
             return data;
         }

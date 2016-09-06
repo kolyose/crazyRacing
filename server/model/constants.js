@@ -1,4 +1,4 @@
-export const MAX_ROOM_PLAYERS = 1;
+export const MAX_ROOM_PLAYERS = 2;
 export const FIELD_WIDTH = 6;
 export const FIELD_LENGTH = 15;
 
