@@ -15,12 +15,14 @@ export default (function(){
     const _actionsByPlayerId = new WeakMap();
     const _positionsByPlayerId = new WeakMap();
     const _distancesByPlayerId = new WeakMap();
+    const _boostedPlayerIds = new WeakMap();
 
     class GameplayController extends EventEmitter{
         constructor(room){
             super();
             _room.set(this, room);
             _positionsByPlayerId.set(this, {});
+            _boostedPlayerIds.set(this, {});
             this._resetRoundData();
         }
 
@@ -40,8 +42,22 @@ export default (function(){
                 this._setPositionByPlayerId(client.playerVO.id, {x:0, y:Util.getRandomValueFromArray(raceTrackNumbers)});
 
                 client.socket.on(PLAYER_ACTIONS, async (data) => {
-                    this._setActionsByPlayerId(client.playerVO.id, new PlayerActionsVO(data));
-                    debug(`PLAYER_ACTIONS`)
+                    const playerId = client.playerVO.id;
+                    const playerActions = new PlayerActionsVO(data);
+
+                    //preventing boosted players from boosting again
+                    if (this._checkIfPlayerBoosted(playerId)){
+                        playerActions.boost = false;
+                    }
+
+                    //and memorizing those who just boosted
+                    if (playerActions.boost){
+                        this._addBoostedPlayerId(playerId);
+                    }
+
+                    //saving player actions
+                    this._setActionsByPlayerId(playerId, playerActions);
+
                     const counter = this._increaseReceivedActionsCounter();
                     if (counter == this.room.maxClients){
                         let dataToCompute = this._getDataToCompute();
@@ -74,9 +90,15 @@ export default (function(){
             for (let playerId in computedResults) if (hasOwnProperty.call(computedResults, playerId)){
                 const playerResults = computedResults[playerId];
                 //if there is no place prop in player's results data meaning the player has not finished the race yet
-                //we need to decorate the data with random distance property for next round
                 if (!playerResults.place){
-                    playerResults.distance = this._getRandomDistanceByPlayerId(playerId)
+                    //we need to decorate the data with new random distance property for next round
+                    const newRandomDistance = this._getRandomDistanceByPlayerId(playerId);
+                    //and take a penalty from it if the player had boosted before
+                    let boostPenalty = (this._checkIfPlayerBoosted(playerId)) ? 1 : 0;
+                    const distanceAfterBoostPenalty = newRandomDistance - boostPenalty;
+
+                    playerResults.distance = distanceAfterBoostPenalty;
+                    this._setDistanceByPlayerId(playerId, playerResults.distance);
                 }
                 data.results.push(playerResults);
             }
@@ -118,7 +140,6 @@ export default (function(){
         _getRandomDistanceByPlayerId(playerId){
             const playerPosition = this._getPositionByPlayerId(playerId);
             const randomDistance =  this._calculateRandomDistanceByPosition(playerPosition.y);
-            this._setDistanceByPlayerId(playerId, randomDistance);
             return randomDistance;
         }
 
@@ -194,6 +215,21 @@ export default (function(){
             let distances = _distancesByPlayerId.get(this);
             distances[playerId] = newDistance;
             _distancesByPlayerId.set(this, distances);
+        }
+
+        _getBoostedPlayerIds(){
+            const ids = _boostedPlayerIds.get(this);
+            return ids;
+        }
+
+        _addBoostedPlayerId(id){
+            const ids = this._getBoostedPlayerIds();
+            ids[id] = id;
+            _boostedPlayerIds.set(this, ids);
+        }
+
+        _checkIfPlayerBoosted(playerId){
+            return (this._getBoostedPlayerIds()[playerId] !== undefined);
         }
     }
 
