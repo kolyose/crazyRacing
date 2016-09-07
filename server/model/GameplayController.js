@@ -29,10 +29,10 @@ export default (function(){
         }
 
         init(){
-            //initializing array of racetrack numbers for further initialization of players' random positions
+            //initializing array of numbers of racetracks available for players
             let raceTrackNumbers = [];
-            for (let i=0; i<FIELD_WIDTH; i++){
-                raceTrackNumbers.push(i);
+            for (let i=0, length=this.room.clients; i<length; i++){
+                raceTrackNumbers.push(FIELD_WIDTH - 1 - i);
             }
 
             for (let client of this.room.clients){
