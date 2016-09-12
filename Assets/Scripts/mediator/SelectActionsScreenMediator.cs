@@ -4,8 +4,7 @@ public class SelectActionsScreenMediator : BaseScreenMediator
 {
     private Button _btnBoost;
     private Button _btnSelect;
-    private ToggleGroup _tgDirection;
-    private Text _tfDistance;
+    private ToggleGroup _direction;
 
     private UserActionsVO _userActionsVO;
 
@@ -15,12 +14,9 @@ public class SelectActionsScreenMediator : BaseScreenMediator
 
         _btnBoost = transform.Find("Boost").GetComponent<Button>();
         _btnSelect = transform.Find("Select").GetComponent<Button>();
-        _tgDirection = transform.Find("Direction").GetComponent<ToggleGroup>();
-        _tfDistance = transform.Find("Distance").GetComponent<Text>();
+        _direction = transform.Find("Direction").GetComponent<ToggleGroup>();
 
         _userActionsVO = new UserActionsVO();
-
-        Messenger<uint>.AddListener(ViewEvent.UPDATE_DISTANCE, OnDistanceUpdate);
     }
 
     public void OnBoostClick()
@@ -47,10 +43,4 @@ public class SelectActionsScreenMediator : BaseScreenMediator
     {
         return ScreensManager.SELECT_ACTIONS;
     }
-
-    private void OnDistanceUpdate(uint distance)
-    {
-        _tfDistance.text = "Your next distance is " + distance.ToString();
-    }
-
 }

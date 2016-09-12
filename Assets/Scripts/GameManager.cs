@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour {
 
     public void SelectActions()
     {
-        screensManager.ShowSelectActionsScreen(mainModel.RoundResultsByPlayerId[mainModel.User.id].distance);
+        screensManager.ShowSelectActionsScreen();
     }
 
     public void OnActionsSelected()

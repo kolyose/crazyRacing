@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -64,8 +63,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         {   
             Character character = charactersFactory.GetCharacter(roundMembers[i]);
             character.transform.SetParent(_charactersContainer);
-            //Vector3 newPosition = mainModel.MilestonesByPlayer[roundMembers[i]][0].position;
-            Vector3 newPosition = mainModel.RoundResultsByPlayerId[roundMembers[i].id].milestones[0].position;
+            Vector3 newPosition = mainModel.MilestonesByPlayer[roundMembers[i]][0].position;
             character.transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
             _characters[i] = character;
 
@@ -79,16 +77,14 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     public void UpdateCharactersPositions()
     {
         for (int i = 0; i < _characters.Length; i++)
-        {
-            // updateCharacterPosition(_characters[i], mainModel.MilestonesByPlayer[_characters[i].PlayerData]);                
-            updateCharacterPosition(_characters[i], mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones);                
+        {         
+           updateCharacterPosition(_characters[i], mainModel.MilestonesByPlayer[_characters[i].PlayerData]);                
         }
     }
 
-    protected void updateCharacterPosition(Character character, MilestoneVO[] milestones)//List<MilestoneVO> milestones)
+    protected void updateCharacterPosition(Character character, List<MilestoneVO> milestones)
     {
-        //if (milestones.Count > 0)
-        if (milestones.Length > 0)
+        if (milestones.Count > 0)
         {
             StartCoroutine(MoveToNextMilestone(character, milestones));
             return;
@@ -102,14 +98,11 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         }
     }
 
-    protected IEnumerator MoveToNextMilestone(Character character, MilestoneVO[] milestones)//List<MilestoneVO> milestones)
+    protected IEnumerator MoveToNextMilestone(Character character, List<MilestoneVO> milestones)
     {
         //shifting first elements from the list
         MilestoneVO milestoneVO = milestones[0];
-        //milestones.RemoveAt(0);
-        int remainingLength = milestones.Length - 1;
-        MilestoneVO[] remainingMilestones = new MilestoneVO[remainingLength];
-        Array.Copy(milestones, 1, remainingMilestones, 0, remainingLength);
+        milestones.RemoveAt(0);
 
         //calculating target position and a distance to it
         Vector3 targetPosition = milestoneVO.position * CELL_SIZE;
@@ -125,10 +118,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         }
 
         //recursive call
-        //updateCharacterPosition(character, milestones);
-        updateCharacterPosition(character, remainingMilestones);
+        updateCharacterPosition(character, milestones);
     }
-
+   
     public void ShowRoundPreResults(List<uint> results)
     {
         Messenger.Broadcast(ViewEvent.COMPLETE);

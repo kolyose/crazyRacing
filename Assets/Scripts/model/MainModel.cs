@@ -12,8 +12,10 @@ public class MainModel : MonoBehaviour
     public PlayerVO User {get; set; }
     public PlayerVO[] RoundPlayers {get; private set;}
 
-//    public Dictionary<string, List<MilestoneVO>> MilestonesByPlayerId { get; set; }
-    public Dictionary<string, RoundResultVO> RoundResultsByPlayerId { get; set; }
+    public Dictionary<PlayerVO, List<MilestoneVO>> MilestonesByPlayer { get; set; }
+
+    private RoundResultVO[] _roundResults;
+
 
     public MainModel()
     {
@@ -32,37 +34,44 @@ public class MainModel : MonoBehaviour
 
     public void InitRoundData(RoundResultVO[] results)
     {
-       // MilestonesByPlayerId = new Dictionary<string, List<MilestoneVO>>();
-        RoundResultsByPlayerId = new Dictionary<string, RoundResultVO>();
-        SaveRoundResults(results);
-       /* for (int i = 0; i < results.Length; i++)
+        MilestonesByPlayer = new Dictionary<PlayerVO, List<MilestoneVO>>();
+
+        for (int i = 0; i < results.Length; i++)
         {
             foreach (PlayerVO player in RoundPlayers)
             {
                 if (player.id == results[i].playerId)
                 {
-                    MilestonesByPlayerId[player.id] = new List<MilestoneVO>().Concat(results[i].milestones.ToList()).ToList();
+                   // MilestonesByPlayer[player] = new List<MilestoneVO>();
+                    MilestonesByPlayer[player] = new List<MilestoneVO>().Concat(results[i].milestones.ToList()).ToList();
                     break;
                 }
             }           
-        }*/
+        }
     }
 
     public void SaveRoundResults(RoundResultVO[] results)
     {
-        foreach (RoundResultVO result in results)
-        {
-            /*for (int i=0; i<RoundPlayers.Length; i++)
-            {
-                 if (result.playerId == RoundPlayers[i].id)
-                 {
-                    MilestonesByPlayerId[result.playerId] = MilestonesByPlayerId[result.playerId].Concat(result.milestones.ToList()).ToList();                  
-                    break;
-                 }
-            }*/
+        _roundResults = results;
 
-            RoundResultsByPlayerId[result.playerId] = result;
+       foreach (RoundResultVO result in _roundResults)
+        {
+           for (int i=0; i<RoundPlayers.Length; i++)
+           {
+                if (result.playerId == RoundPlayers[i].id)
+                {
+                   MilestonesByPlayer[RoundPlayers[i]] = MilestonesByPlayer[RoundPlayers[i]].Concat(result.milestones.ToList()).ToList();                    
+                   break;
+                }
+           }
         }
+
+        /*for (int i = 0; i < RoundPlayers.Length; i++)
+        {    
+            //setting fake coordinates jsut for test
+            //TODO add real values here after parsing
+            MilestonesByPlayer[RoundPlayers[i]].Add(new MilestoneVO(new Vector3(i, i, 0), 1));
+        }*/
     }
 
     public List<uint> GetRoundPreResults() //TODO: change type to real one
