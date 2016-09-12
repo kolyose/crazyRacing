@@ -39,7 +39,7 @@ class RoomsManager{
         }
 
         room.addClient(client);
-        //debug(`joinClientToAvailablePublicRoom with id:${room.id}`);
+        debug(`joinClientToAvailablePublicRoom with id:${room.id}`);
         return room;
     }
 

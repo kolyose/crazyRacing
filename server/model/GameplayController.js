@@ -33,7 +33,7 @@ export default (function(){
         init(){
             //initializing array of numbers of racetracks available for players
             let raceTrackNumbers = [];
-            for (let i=0, length=this.room.clients.length; i<length; i++){
+            for (let i=0, length=this.room.clients; i<length; i++){
                 raceTrackNumbers.push(FIELD_WIDTH - 1 - i);
             }
 
@@ -76,10 +76,10 @@ export default (function(){
             let initialDataByPlayerId = {};
             for (let playerId of this.room.playersIds){
                 const position = this._getPositionByPlayerId(playerId);
-                initialDataByPlayerId[playerId] = {playerId, milestones: [position]};
+                initialDataByPlayerId[playerId].milestones = [position];
             }
             const initialData = this._getRoundResultsData(initialDataByPlayerId);
-            //debug(`START_GAME with initialData: `, initialData)
+           // debug(`START_GAME with initialData: `, initialData)
             this._broadcastEventToClients(START_GAME, initialData);
         }
 
@@ -96,6 +96,7 @@ export default (function(){
                     //and take a penalty from it if the player had boosted before
                     let boostPenalty = (this._checkIfPlayerBoosted(playerId)) ? 1 : 0;
                     const distanceAfterBoostPenalty = newRandomDistance - boostPenalty;
+
                     playerResults.distance = distanceAfterBoostPenalty;
                     this._setDistanceByPlayerId(playerId, playerResults.distance);
                 }
