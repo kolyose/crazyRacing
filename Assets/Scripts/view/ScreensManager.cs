@@ -26,9 +26,9 @@ public class ScreensManager : MonoBehaviour, IScreensManager {
         Messenger<uint>.Broadcast(ViewEvent.HIDE_SCREEN, ScreensManager.LOGIN);
     }
 
-    public void ShowSelectActionsScreen()
+    public void ShowSelectActionsScreen(uint distance)
     {
-        //  selectActionsScreen.enabled = true;
+        Messenger<uint>.Broadcast(ViewEvent.UPDATE_DISTANCE, distance);
         Messenger<uint>.Broadcast(ViewEvent.SHOW_SCREEN, ScreensManager.SELECT_ACTIONS);
     }
 

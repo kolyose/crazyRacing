@@ -6,7 +6,7 @@ public interface IScreensManager
     void InitScreens();
     void ShowLoginScreen();
     void HideLoginScreen();
-    void ShowSelectActionsScreen();
+    void ShowSelectActionsScreen(uint distance);
     void HideSelectActionsScreen();
     void ShowLoaderScreen();
     void HideLoaderScreen();   

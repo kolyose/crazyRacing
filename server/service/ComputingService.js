@@ -31,7 +31,7 @@ export default function (data){
                 milestonesByPlayerId[playerId] = [];
 
                 //initializing output data
-                results[playerId] = {};
+                results[playerId] = {playerId};
             }
 
             // calculating milestones until all players complete their distances
@@ -146,13 +146,12 @@ export default function (data){
                 }
                 else
                 {
-
                     //in other case move player by 1 step forward
                     let targetSlotIndex = slotIndex + 1;
 
                     //if a player has reached the finish line we need to save his place taken
                     //and exclude him from further calculations
-                    if (targetSlotIndex === FIELD_LENGTH){
+                    if (targetSlotIndex >= FIELD_LENGTH){
                         finishers.push(playerId);
                         data[playerId].distance = 0;
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
