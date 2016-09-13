@@ -1,6 +1,6 @@
 using UnityEngine;
-using System;
-using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
     
@@ -52,12 +52,12 @@ public class GameManager : MonoBehaviour {
     
     public void GetLoginData()
     {
-        screensManager.ShowLoginScreen();
+        screensManager.ShowScreen(ScreenID.LOGIN);
     }
 
     public void OnLoginDataReady()
     {
-        screensManager.HideLoginScreen();
+        screensManager.HideScreen(ScreenID.LOGIN);
     }    
 
     public void Login(string login, string password)
@@ -85,14 +85,14 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    public void ShowLoader()
+    public void ShowWaitingScreen()
     {
-        screensManager.ShowLoaderScreen();
+        screensManager.ShowScreen(ScreenID.WAITING_FOR_PLAYERS);
     }
 
-    public void HideLoader()
+    public void HideWaitingScreen()
     {
-        screensManager.HideLoaderScreen();
+        screensManager.HideScreen(ScreenID.WAITING_FOR_PLAYERS);
     }
 
     public void JoinRoom(string roomID)
@@ -112,12 +112,15 @@ public class GameManager : MonoBehaviour {
 
     public void SelectActions()
     {
-        screensManager.ShowSelectActionsScreen(mainModel.RoundResultsByPlayerId[mainModel.User.id].distance);
+        screensManager.ResetScreen(ScreenID.SELECT_ACTIONS);
+        uint userDistance = mainModel.RoundResultsByPlayerId[mainModel.User.id].distance;
+        Messenger<uint>.Broadcast(ViewEvent.SET_DISTANCE, userDistance);
+        screensManager.ShowScreen(ScreenID.SELECT_ACTIONS);
     }
 
     public void OnActionsSelected()
     {
-        screensManager.HideSelectActionsScreen();
+        screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
     }   
 
     public void SendSelectedActions(UserActionsVO actions)
@@ -125,18 +128,21 @@ public class GameManager : MonoBehaviour {
         dataService.SendUserActions(actions);
     }
 
-    public void ShowRoundPreResults()
-    {
-        gameBoard.ShowRoundPreResults(mainModel.GetRoundPreResults());
-    }
-
     public void ShowGameResults()
     {
-        gameBoard.ShowGameResults();
+        screensManager.ResetScreen(ScreenID.GAME_RESULTS);
+        SortedDictionary<uint, string> playersByPlace = mainModel.GetPlayersByPlace();
+        Messenger<SortedDictionary<uint, string>>.Broadcast(ViewEvent.SET_GAME_RESULTS, playersByPlace);
+        screensManager.ShowScreen(ScreenID.GAME_RESULTS);
     }
 
     public void SaveRoundResults(RoundResultVO[] results)
     {
         mainModel.SaveRoundResults(results);
+    }
+
+    public bool IsGameEnd()
+    {
+        return mainModel.IsGameEnd();
     }
 }

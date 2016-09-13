@@ -1,6 +1,6 @@
 ﻿public interface IScreenMediator
 {
-    void ShowScreenHandler(uint screenID);
-    void HideScreenHandler(uint screenID);
-    uint GetScreenID();
+    void ShowScreenHandler(ScreenID screenID);
+    void HideScreenHandler(ScreenID screenID);
+    ScreenID GetScreenID();
 }

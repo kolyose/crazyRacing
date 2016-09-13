@@ -1,50 +1,33 @@
 using UnityEngine;
 
+public enum ScreenID
+{
+    NONE,
+    LOGIN,
+    WAITING_FOR_PLAYERS,
+    SELECT_ACTIONS,
+    SIMULATION,
+    GAME_RESULTS
+}
+
 public class ScreensManager : MonoBehaviour, IScreensManager {
-
-    //  public Canvas selectActionsScreen;
-    //  public Canvas loginScreen;
-
-    public const uint NONE = 0;
-    public const uint LOGIN = 1;
-    public const uint SELECT_ACTIONS = 2;
-
+    
     public void InitScreens()
     {
-        HideSelectActionsScreen();
     }
 
-    public void ShowLoginScreen()
+    public void ShowScreen(ScreenID screenId)
     {
-        //    loginScreen.enabled = true;
-        Messenger<uint>.Broadcast(ViewEvent.SHOW_SCREEN, ScreensManager.LOGIN);
+        Messenger<ScreenID>.Broadcast(ViewEvent.SHOW_SCREEN, screenId);
     }
 
-    public void HideLoginScreen()
+    public void HideScreen(ScreenID screenId)
     {
-        //    loginScreen.enabled = false;
-        Messenger<uint>.Broadcast(ViewEvent.HIDE_SCREEN, ScreensManager.LOGIN);
+        Messenger<ScreenID>.Broadcast(ViewEvent.HIDE_SCREEN, screenId);
     }
 
-    public void ShowSelectActionsScreen(uint distance)
+    public void ResetScreen(ScreenID screenId)
     {
-        Messenger<uint>.Broadcast(ViewEvent.UPDATE_DISTANCE, distance);
-        Messenger<uint>.Broadcast(ViewEvent.SHOW_SCREEN, ScreensManager.SELECT_ACTIONS);
-    }
-
-    public void HideSelectActionsScreen()
-    {
-        //    selectActionsScreen.enabled = false;
-        Messenger<uint>.Broadcast(ViewEvent.HIDE_SCREEN, ScreensManager.SELECT_ACTIONS);
-    }
-
-    public void ShowLoaderScreen()
-    {
-
-    }
-
-    public void HideLoaderScreen()
-    {
-
+        Messenger<ScreenID>.Broadcast(ViewEvent.RESET_SCREEN, screenId);
     }
 }

@@ -133,8 +133,4 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     {
         Messenger.Broadcast(ViewEvent.COMPLETE);
     }
-
-    public void ShowGameResults()
-    {
-    }
 }

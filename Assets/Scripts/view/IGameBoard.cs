@@ -7,5 +7,4 @@ public interface IGameBoard
     void InitCharacters(PlayerVO[] roundMembers, PlayerVO user);
     void UpdateCharactersPositions();
     void ShowRoundPreResults(List<uint> results);
-    void ShowGameResults();
  }

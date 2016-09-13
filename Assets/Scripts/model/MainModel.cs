@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 public class MainModel : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class MainModel : MonoBehaviour
     public uint FieldLength = 10;
     public uint FieldWidth = 6;
     public float MovingSpeed = 1.0f;
-
     public PlayerVO User {get; set; }
     public PlayerVO[] RoundPlayers {get; private set;}
 
@@ -65,9 +65,9 @@ public class MainModel : MonoBehaviour
         }
     }
 
-    public List<uint> GetRoundPreResults() //TODO: change type to real one
+    public bool IsGameEnd()
     {
-        return null;//TODO: add functionality
+        return RoundResultsByPlayerId[User.id].place > 0;
     }
 
     public CharacterVO GetActiveCharacterVO()
@@ -76,12 +76,29 @@ public class MainModel : MonoBehaviour
         CharacterVO characterVO = new CharacterVO();
         characterVO.pictureId = 1;
         return characterVO;
-
-        //return _playerVO.ActiveCharacterVO;
     }
 
-    private Vector2[] ParseCharactersPositions(string data)
+    public SortedDictionary<uint, string> GetPlayersByPlace()
     {
-        return null; //TODO: add functionality
+        SortedDictionary<uint, string> playersByPlace = new SortedDictionary<uint, string>();
+        foreach (KeyValuePair<string, RoundResultVO> element in RoundResultsByPlayerId)
+        {
+            playersByPlace.Add(element.Value.place, GetPlayerById(element.Key).name);
+        }
+
+        return playersByPlace;
+    }
+
+    public PlayerVO GetPlayerById(string playerId)
+    {
+        foreach (PlayerVO player in RoundPlayers)
+        {
+            if (player.id == playerId)
+            {
+                return player;
+            }
+        }
+
+        return null;
     }
 }

@@ -2,7 +2,7 @@
 
 public class SelectActionsScreenMediator : BaseScreenMediator
 {
-    private Button _btnBoost;
+    private Toggle _toggleBoost;
     private Button _btnSelect;
     private ToggleGroup _tgDirection;
     private Text _tfDistance;
@@ -13,14 +13,14 @@ public class SelectActionsScreenMediator : BaseScreenMediator
     {
         base.Awake();
 
-        _btnBoost = transform.Find("Boost").GetComponent<Button>();
+        _toggleBoost = transform.Find("Boost").GetComponent<Toggle>();
         _btnSelect = transform.Find("Select").GetComponent<Button>();
         _tgDirection = transform.Find("Direction").GetComponent<ToggleGroup>();
         _tfDistance = transform.Find("Distance").GetComponent<Text>();
 
         _userActionsVO = new UserActionsVO();
 
-        Messenger<uint>.AddListener(ViewEvent.UPDATE_DISTANCE, OnDistanceUpdate);
+        Messenger<uint>.AddListener(ViewEvent.SET_DISTANCE, OnSetDistance);
     }
 
     public void OnBoostClick()
@@ -43,14 +43,21 @@ public class SelectActionsScreenMediator : BaseScreenMediator
         Messenger<UserActionsVO>.Broadcast(GameEvent.USER_ACTIONS_SELECTED, _userActionsVO);
     }
 
-    public override uint GetScreenID()
+    public override ScreenID GetScreenID()
     {
-        return ScreensManager.SELECT_ACTIONS;
+        return ScreenID.SELECT_ACTIONS;
     }
 
-    private void OnDistanceUpdate(uint distance)
+    protected void OnSetDistance(uint data)
     {
-        _tfDistance.text = "Your next distance is " + distance.ToString();
+        _tfDistance.text = "Your next distance is " + data.ToString();
+    }
+
+    protected override void OnReset(ScreenID screenId)
+    {
+        base.OnReset(screenId);
+        _toggleBoost.isOn = false;
+        _tgDirection.SetAllTogglesOff();
     }
 
 }

@@ -45,7 +45,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         Messenger<RoundResultVO[]>.AddListener(ServerCommand.START_GAME, OnStartGameCommand);
         Messenger<RoundResultVO[]>.AddListener(ServerCommand.ROUND_RESULTS, OnRoundResultsCommand);
 
-        _gameManager.ShowLoader();
+        _gameManager.ShowWaitingScreen();
         _gameManager.JoinRoom(roomID);
     }
 
@@ -63,7 +63,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     {
         Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
 
-        _gameManager.HideLoader();
+        _gameManager.HideWaitingScreen();
         _gameManager.InitRoundData(results);
         _gameManager.InitCharacters();
         _gameManager.UpdateCharactersPositions();
@@ -74,11 +74,11 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
      */
     private void OnRoundResultsCommand(RoundResultVO[] results)
     {
-        Messenger.AddListener(ViewEvent.COMPLETE, OnRoundPreResultsShowComplete);
-
-        _gameManager.HideLoader();
+        _gameManager.HideWaitingScreen();
         _gameManager.SaveRoundResults(results);
-        _gameManager.ShowRoundPreResults();
+
+        Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
+        _gameManager.UpdateCharactersPositions();
     }
 
     /*
@@ -98,42 +98,21 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         Messenger<UserActionsVO>.RemoveListener(GameEvent.USER_ACTIONS_SELECTED, OnUserActionsSelected);
 
         _gameManager.OnActionsSelected();
-        _gameManager.ShowLoader();
+        _gameManager.ShowWaitingScreen();
         _gameManager.SendSelectedActions(actions);
     }
     
-    /*
-     * After pre-result animation move characters
-     */
-    private void OnRoundPreResultsShowComplete()
-    {
-        Messenger.RemoveListener(ViewEvent.COMPLETE, OnRoundPreResultsShowComplete);
-        Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
-
-        _gameManager.UpdateCharactersPositions();      
-    }
 
     private void OnCharatersPositionsUpdateComplete()
     {
         Messenger.RemoveListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
-        CheckIfRoundComplete();
-    }
 
-    /*
-     *
-     */
-    private void CheckIfRoundComplete()
-    {
-        //TODO: remove GAP and implement real checking
-        bool roundComplete = false;
-
-        if (roundComplete)
+        if (_gameManager.IsGameEnd())
         {
             _gameManager.ShowGameResults();
-        } 
-        else
-        {
-            SelectActions();
+            return;
         }
+
+        SelectActions();
     }    
 }

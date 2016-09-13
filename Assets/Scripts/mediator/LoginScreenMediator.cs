@@ -23,8 +23,8 @@ public class LoginScreenMediator : BaseScreenMediator {
         Messenger<string, string>.Broadcast(ModelEvent.DATA_READY, tfLogin.text, tfPassword.text);
     }
 
-    public override uint GetScreenID()
+    public override ScreenID GetScreenID()
     {
-        return ScreensManager.LOGIN;
+        return ScreenID.LOGIN;
     }
 }
