@@ -156,7 +156,7 @@ export default function (data){
                         data[playerId].distance = 0;
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                         milestonesByPlayerId[playerId].push({
-                            x: slotIndex,
+                            x: targetSlotIndex,
                             y: racetrackIndex,
                             s:(data[playerId].actions.boost ? 2 : 1)
                         });
