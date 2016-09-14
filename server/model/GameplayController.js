@@ -1,4 +1,4 @@
-import {FIELD_WIDTH, PLAYER_ACTIONS, START_GAME, ROUND_RESULTS} from './constants';
+import {FIELD_WIDTH, FIELD_LENGTH, PLAYER_ACTIONS, START_GAME, ROUND_RESULTS} from './constants';
 import ComputingService from './../service/ComputingService';
 import PlayerActionsVO from './PlayerActionsVO';
 import Util from './../util';
@@ -45,14 +45,14 @@ export default (function(){
                     const playerId = client.playerVO.id;
                     let playerActions = new PlayerActionsVO(data);
 
-                    debug(`PLAYER_ACTIONS: `, data);
+                    //debug(`PLAYER_ACTIONS: `, data);
 
                     //preventing boosted players from boosting again
                     if (this._checkIfPlayerBoosted(playerId)){
                         playerActions.boost = false;
                     }
 
-                    //and memorizing those who just boosted
+                    //and memorizing just boosted player
                     if (playerActions.boost){
                         this._addBoostedPlayerId(playerId);
                     }
@@ -77,14 +77,18 @@ export default (function(){
 
         start(){
             debug(`START`)
+
+            const gameSettings = this._getGameSettings();
+            this._broadcastEventToClients(START_GAME, gameSettings);
+
             let initialDataByPlayerId = {};
             for (let playerId of this.room.playersIds){
                 const position = this._getPositionByPlayerId(playerId);
                 initialDataByPlayerId[playerId] = {playerId, milestones: [position]};
             }
-            const initialData = this._getRoundResultsData(initialDataByPlayerId);
-            //debug(`START_GAME with initialData: `, initialData)
-            this._broadcastEventToClients(START_GAME, initialData);
+            const roundResults = this._getRoundResultsData(initialDataByPlayerId);
+            //debug(`START_GAME with roundResults: `, roundResults)
+            this._broadcastEventToClients(ROUND_RESULTS, roundResults);
         }
 
         _getRoundResultsData(computedResults){
@@ -234,6 +238,15 @@ export default (function(){
         _checkIfPlayerBoosted(playerId){
             let result = (this._getBoostedPlayerIds()[playerId] !== undefined);
             return result;
+        }
+
+        _getGameSettings() {
+           return {
+             settings: {
+                fieldWidth  : FIELD_WIDTH,
+                fieldLength : FIELD_LENGTH
+             }
+           };
         }
     }
 

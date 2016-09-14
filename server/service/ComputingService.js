@@ -5,8 +5,8 @@ const debug = new Debug('CR:ComputingService')
 export default function (data){
         return new Promise((resolve, reject) => {
 
-            const STEP = 1;
-            const BOOST = 2;
+            const STEP_SPEED = 1;
+            const BOOST_SPEED = 3;
             const hasOwnProperty = Object.prototype.hasOwnProperty;
             let results = {};
             let milestonesByPlayerId = {};
@@ -132,13 +132,13 @@ export default function (data){
                     milestonesByPlayerId[playerId].push({
                             x: slotIndex,
                             y:racetrackIndex,
-                            s:(data[playerId].actions.boost ? 2 : 1)
+                            s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
                         });
 
                     milestonesByPlayerId[playerId].push({
                             x: slotIndex,
                             y:targetRacetrackIndex,
-                            s:(data[playerId].actions.boost ? 2 : 1)
+                            s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
                         });
 
                      //do not forget to reset shifting request to avoid double shifting
@@ -158,7 +158,7 @@ export default function (data){
                         milestonesByPlayerId[playerId].push({
                             x: targetSlotIndex,
                             y: racetrackIndex,
-                            s:(data[playerId].actions.boost ? 2 : 1)
+                            s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
                         });
 
                         return;
@@ -173,7 +173,7 @@ export default function (data){
                         milestonesByPlayerId[playerId].push({
                                 x: targetSlotIndex,
                                 y:racetrackIndex,
-                                s:(data[playerId].actions.boost ? 2 : 1)
+                                s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
                             });
                     }
                 }
