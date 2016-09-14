@@ -63,17 +63,17 @@ public class DataService : MonoBehaviour, IDataService
     
     private void OnStartGame(SocketIOEvent evt)
     {
-        string resultsRawData = evt.data["data"].ToString();
-        Debug.Log("START_GAME: " + resultsRawData);
-        RoundResultVO[] results = dataParser.GetRoundResultsData(resultsRawData);
-        Messenger<RoundResultVO[]>.Broadcast(ServerCommand.START_GAME, results);
+        string rawData = evt.data["data"].ToString();
+        Debug.Log("START_GAME: " + rawData);
+        SettingsVO settings = dataParser.GetSettingsData(rawData);
+        Messenger<SettingsVO>.Broadcast(ServerCommand.START_GAME, settings);
     }
 
     private void OnRoundResults(SocketIOEvent evt)
     {
-        string resultsRawData = evt.data["data"].ToString();
-        Debug.Log("ROUND_RESULTS: " + resultsRawData);
-        RoundResultVO[] results = dataParser.GetRoundResultsData(resultsRawData);
+        string rawData = evt.data["data"].ToString();
+        Debug.Log("ROUND_RESULTS: " + rawData);
+        RoundResultVO[] results = dataParser.GetRoundResultsData(rawData);
         Messenger<RoundResultVO[]>.Broadcast(ServerCommand.ROUND_RESULTS, results);
     }
 

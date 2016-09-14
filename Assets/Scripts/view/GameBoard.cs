@@ -39,9 +39,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 		float positionX = 0.0f;
         float positionY = 0.0f;
         
-        for (int i = 0; i < mainModel.FieldWidth; i++) 
+        for (int i = 0; i < mainModel.GameSettings.fieldWidth; i++) 
 		{
-            for (int j = 0; j < mainModel.FieldLength; j++)
+            for (int j = 0; j < mainModel.GameSettings.fieldLength; j++)
 			{				
                 GameObject grassTile = groundTiles[i % 2];				
 				SpriteRenderer renderer = grassTile.GetComponent<SpriteRenderer>();
@@ -56,15 +56,17 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 		}
 	}
 
-    public void InitCharacters(PlayerVO[] roundMembers, PlayerVO user)
+    /**
+    * Method overload for case when a characters should be initialized and located to start positions
+    */
+    public void UpdateCharactersPositions(PlayerVO[] roundMembers, PlayerVO user)
     {
         _characters = new Character[roundMembers.Length];
 
-       for (int i = 0; i < roundMembers.Length; i++)
-        {   
+        for (int i = 0; i < roundMembers.Length; i++)
+        {
             Character character = charactersFactory.GetCharacter(roundMembers[i]);
             character.transform.SetParent(_charactersContainer);
-            //Vector3 newPosition = mainModel.MilestonesByPlayer[roundMembers[i]][0].position;
             Vector3 newPosition = mainModel.RoundResultsByPlayerId[roundMembers[i].id].milestones[0].position;
             character.transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
             _characters[i] = character;
@@ -76,11 +78,13 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         }
     }
 
+    /**
+    * Method overload for case when a characters have already been initialized and just need to be re-located
+    */
     public void UpdateCharactersPositions()
     {
         for (int i = 0; i < _characters.Length; i++)
-        {
-            // updateCharacterPosition(_characters[i], mainModel.MilestonesByPlayer[_characters[i].PlayerData]);                
+        {          
             updateCharacterPosition(_characters[i], mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones);                
         }
     }
@@ -127,10 +131,5 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         //recursive call
         //updateCharacterPosition(character, milestones);
         updateCharacterPosition(character, remainingMilestones);
-    }
-
-    public void ShowRoundPreResults(List<uint> results)
-    {
-        Messenger.Broadcast(ViewEvent.COMPLETE);
     }
 }

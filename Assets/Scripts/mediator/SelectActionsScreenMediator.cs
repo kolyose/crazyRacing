@@ -56,7 +56,9 @@ public class SelectActionsScreenMediator : BaseScreenMediator
     protected override void OnReset(ScreenID screenId)
     {
         base.OnReset(screenId);
+        _userActionsVO.boost = false;
         _toggleBoost.isOn = false;
+        _userActionsVO.direction = 0;
         _tgDirection.SetAllTogglesOff();
     }
 

@@ -42,7 +42,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     {
         Messenger<PlayerVO[]>.AddListener(ServerCommand.REMOVE_PLAYERS, OnRemovePlayersCommand);
         Messenger<PlayerVO[]>.AddListener(ServerCommand.ADD_PLAYERS, OnAddPlayersCommand);
-        Messenger<RoundResultVO[]>.AddListener(ServerCommand.START_GAME, OnStartGameCommand);
+        Messenger<SettingsVO>.AddListener(ServerCommand.START_GAME, OnStartGameCommand);
         Messenger<RoundResultVO[]>.AddListener(ServerCommand.ROUND_RESULTS, OnRoundResultsCommand);
 
         _gameManager.ShowWaitingScreen();
@@ -59,14 +59,9 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         _gameManager.OnRemovePlayersCommand(players);
     }
 
-    private void OnStartGameCommand(RoundResultVO[] results)
+    private void OnStartGameCommand(SettingsVO gameSettings)
     {
-        Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
-
-        _gameManager.HideWaitingScreen();
-        _gameManager.InitRoundData(results);
-        _gameManager.InitCharacters();
-        _gameManager.UpdateCharactersPositions();
+        _gameManager.InitGame(gameSettings);
     }
     
     /*

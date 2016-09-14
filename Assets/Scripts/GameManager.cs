@@ -40,16 +40,10 @@ public class GameManager : MonoBehaviour {
     }
 
     public void InitializeUI()
-    {
-        gameBoard.InitializeBackground();
+    {       
         screensManager.InitScreens();
     }
 
-    public void InitCharacters()
-	{
-        gameBoard.InitCharacters(mainModel.RoundPlayers, mainModel.User);
-	}
-    
     public void GetLoginData()
     {
         screensManager.ShowScreen(ScreenID.LOGIN);
@@ -100,9 +94,15 @@ public class GameManager : MonoBehaviour {
         dataService.JoinRoom(roomID, mainModel.User);
     }
 
-    public void InitRoundData(RoundResultVO[] results)
+    public void InitGame(SettingsVO gameSettings)
     {
-        mainModel.InitRoundData(results);
+        mainModel.ResetGameData();
+        mainModel.GameSettings = gameSettings;
+
+        camera.UpdateSettings();    
+
+        gameBoard.InitializeBackground();
+        gameBoard.UpdateCharactersPositions(mainModel.RoundPlayers, mainModel.User);
     }
 
     public void UpdateCharactersPositions()

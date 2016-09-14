@@ -5,10 +5,8 @@ using System;
 
 public class MainModel : MonoBehaviour
 {
-    //TODO: make following parameters to be set up in Settings class
-    public uint FieldLength = 10;
-    public uint FieldWidth = 6;
     public float MovingSpeed = 1.0f;
+    public SettingsVO GameSettings { get; set;}
     public PlayerVO User {get; set; }
     public PlayerVO[] RoundPlayers {get; private set;}
 
@@ -30,22 +28,9 @@ public class MainModel : MonoBehaviour
        //TODO: add functionality
     }
 
-    public void InitRoundData(RoundResultVO[] results)
+    public void ResetGameData()
     {
-       // MilestonesByPlayerId = new Dictionary<string, List<MilestoneVO>>();
         RoundResultsByPlayerId = new Dictionary<string, RoundResultVO>();
-        SaveRoundResults(results);
-       /* for (int i = 0; i < results.Length; i++)
-        {
-            foreach (PlayerVO player in RoundPlayers)
-            {
-                if (player.id == results[i].playerId)
-                {
-                    MilestonesByPlayerId[player.id] = new List<MilestoneVO>().Concat(results[i].milestones.ToList()).ToList();
-                    break;
-                }
-            }           
-        }*/
     }
 
     public void SaveRoundResults(RoundResultVO[] results)

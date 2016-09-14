@@ -140,22 +140,22 @@ Prefab:
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 512
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 384
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
       propertyPath: m_SizeDelta.x
-      value: 1024
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
       propertyPath: m_SizeDelta.y
-      value: 768
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
@@ -170,12 +170,12 @@ Prefab:
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224000013898527948, guid: 9b1c2e013f9d1ed4285135007dec9364,
         type: 2}
@@ -471,6 +471,10 @@ Prefab:
       propertyPath: socket
       value: 
       objectReference: {fileID: 379872988}
+    - target: {fileID: 11430406, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
+      propertyPath: MovingSpeed
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
   m_IsPrefabParent: 0
