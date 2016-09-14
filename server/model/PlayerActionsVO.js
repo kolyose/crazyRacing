@@ -7,8 +7,8 @@ export default (function () {
 
     class PlayerActionsVO{
         constructor({direction, boost}){
-            _direction.set(this, direction);
-            _boost.set(this, boost);
+            this.direction = direction;
+            this.boost = boost;
         }
 
         set direction(value){
@@ -17,6 +17,10 @@ export default (function () {
 
         get direction(){
             return _direction.get(this);
+        }
+
+        set boost(value){
+            _boost.set(this, value);
         }
 
         get boost(){

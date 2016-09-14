@@ -43,7 +43,9 @@ export default (function(){
 
                 client.socket.on(PLAYER_ACTIONS, async (data) => {
                     const playerId = client.playerVO.id;
-                    const playerActions = new PlayerActionsVO(data);
+                    let playerActions = new PlayerActionsVO(data);
+
+                    debug(`PLAYER_ACTIONS: `, data);
 
                     //preventing boosted players from boosting again
                     if (this._checkIfPlayerBoosted(playerId)){
@@ -61,7 +63,9 @@ export default (function(){
                     const counter = this._increaseReceivedActionsCounter();
                     if (counter == this.room.maxClients){
                         let dataToCompute = this._getDataToCompute();
+                        //debug(`dataToCompute: `, dataToCompute);
                         const computedResults = await ComputingService(dataToCompute);
+                        //debug(`computedResults: `, computedResults);
                         this._updatePlayersPositions(computedResults);
                         this._resetRoundData();
                         const roundResultsData = this._getRoundResultsData(computedResults);
@@ -217,8 +221,8 @@ export default (function(){
         }
 
         _getBoostedPlayerIds(){
-            const ids = _boostedPlayerIds.get(this);
-            return ids;
+            const result = _boostedPlayerIds.get(this);
+            return result;
         }
 
         _addBoostedPlayerId(id){
@@ -228,7 +232,8 @@ export default (function(){
         }
 
         _checkIfPlayerBoosted(playerId){
-            return (this._getBoostedPlayerIds()[playerId] !== undefined);
+            let result = (this._getBoostedPlayerIds()[playerId] !== undefined);
+            return result;
         }
     }
 
