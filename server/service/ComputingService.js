@@ -98,9 +98,10 @@ export default function (data){
 
             //after all milestones-related calculations done we need to check if there are finishers
             //and if so we need to set places for all unfinished players to make game completed
-            if (finishers.length) {
-                for (let racetrackIndex = FIELD_WIDTH - 1; racetrackIndex > -1; racetrackIndex--) {
-                    for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
+            const finishersNumber = finishers.length; //TODO: run & test!
+            if (finishersNumber > 0) {
+                for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
+                    for (let racetrackIndex = FIELD_WIDTH - 1; racetrackIndex > -1; racetrackIndex--) {
                         let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
                         if (!playerId) continue;
                         finishers.push(playerId);
@@ -109,7 +110,7 @@ export default function (data){
                 }
 
                 //setting place prop for all players depending on their finishing order
-                for (let i=0, length=finishers.length; i<length; i++){
+                for (let i=0; i<finishersNumber; i++){
                     results[finishers[i]].place = i+1;
                 }
             }

@@ -1,8 +1,8 @@
-export const MAX_ROOM_PLAYERS = 2;
+//TODO: reading settings from database
+export const MAX_ROOM_PLAYERS = 6;
 export const FIELD_WIDTH = 6;
-export const FIELD_LENGTH = 10;
+export const FIELD_LENGTH = 15;
 
-export const GAME_SETTINGS = "GAME_SETTINGS";
 export const JOIN_ROOM = "JOIN_ROOM";
 export const ADD_PLAYERS = "ADD_PLAYERS";
 export const START_GAME = "START_GAME";

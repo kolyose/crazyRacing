@@ -79,6 +79,7 @@ export default (function(){
             debug(`START`)
 
             const gameSettings = this._getGameSettings();
+            //debug(`gameSettings: `, gameSettings);
             this._broadcastEventToClients(START_GAME, gameSettings);
 
             let initialDataByPlayerId = {};
@@ -242,10 +243,8 @@ export default (function(){
 
         _getGameSettings() {
            return {
-             settings: {
-                fieldWidth  : FIELD_WIDTH,
-                fieldLength : FIELD_LENGTH
-             }
+               fieldWidth  : FIELD_WIDTH,
+               fieldLength : FIELD_LENGTH
            };
         }
     }
