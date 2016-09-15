@@ -94,20 +94,20 @@ public class GameManager : MonoBehaviour {
         dataService.JoinRoom(roomID, mainModel.User);
     }
 
-    public void InitGame(SettingsVO gameSettings)
+    public void StartGame(SettingsVO gameSettings)
     {
         mainModel.ResetGameData();
         mainModel.GameSettings = gameSettings;
 
         camera.UpdateSettings();    
 
-        gameBoard.InitializeBackground();
-        gameBoard.UpdateCharactersPositions(mainModel.RoundPlayers, mainModel.User);
+        gameBoard.InitBackground();
+        gameBoard.InitCharacters();
     }
 
     public void UpdateCharactersPositions()
     {
-        gameBoard.UpdateCharactersPositions();
+        gameBoard.UpdateCharactersPositions(mainModel.IsNewGame);
     }
 
     public void SelectActions()

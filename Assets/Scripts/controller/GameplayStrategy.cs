@@ -61,7 +61,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
 
     private void OnStartGameCommand(SettingsVO gameSettings)
     {
-        _gameManager.InitGame(gameSettings);
+        _gameManager.StartGame(gameSettings);
     }
     
     /*

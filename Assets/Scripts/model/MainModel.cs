@@ -6,11 +6,22 @@ using System;
 public class MainModel : MonoBehaviour
 {
     public float MovingSpeed = 1.0f;
+    private bool _isNewGame;
+    public bool IsNewGame {
+        get
+        {
+            bool result = _isNewGame;
+            _isNewGame = false;
+            return result;
+        }
+        set
+        {
+            _isNewGame = value;
+        }
+    }
     public SettingsVO GameSettings { get; set;}
     public PlayerVO User {get; set; }
     public PlayerVO[] RoundPlayers {get; private set;}
-
-//    public Dictionary<string, List<MilestoneVO>> MilestonesByPlayerId { get; set; }
     public Dictionary<string, RoundResultVO> RoundResultsByPlayerId { get; set; }
 
     public MainModel()
@@ -30,6 +41,7 @@ public class MainModel : MonoBehaviour
 
     public void ResetGameData()
     {
+        IsNewGame = true;
         RoundResultsByPlayerId = new Dictionary<string, RoundResultVO>();
     }
 

@@ -32,7 +32,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         _tilesContainer = viewContainer.transform.FindChild("Tiles").transform;
     }
 
-  	public void InitializeBackground() {
+  	public void InitBackground() {
 
         CELL_SIZE = groundTiles[0].GetComponent<SpriteRenderer>().bounds.size.x * camera.Scale;
 
@@ -56,48 +56,55 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 		}
 	}
 
-    /**
-    * Method overload for case when a characters should be initialized and located to start positions
-    */
-    public void UpdateCharactersPositions(PlayerVO[] roundMembers, PlayerVO user)
+    public void InitCharacters()
     {
-        _characters = new Character[roundMembers.Length];
+        int length = mainModel.RoundPlayers.Length;
+        _characters = new Character[length];
 
-        for (int i = 0; i < roundMembers.Length; i++)
+        for (int i = 0; i < length; i++)
         {
-            Character character = charactersFactory.GetCharacter(roundMembers[i]);
+            Character character = charactersFactory.GetCharacter(mainModel.RoundPlayers[i]);
             character.transform.SetParent(_charactersContainer);
-            Vector3 newPosition = mainModel.RoundResultsByPlayerId[roundMembers[i].id].milestones[0].position;
-            character.transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
+            //Vector3 newPosition = mainModel.RoundResultsByPlayerId[mainModel.RoundPlayers[i].id].milestones[0].position;
+            //character.transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
             _characters[i] = character;
 
-            if (roundMembers[i].id == user.id)
+            if (mainModel.RoundPlayers[i].id == mainModel.User.id)
             {
                 character.displayOutline();
             }
         }
     }
-
-    /**
-    * Method overload for case when a characters have already been initialized and just need to be re-located
-    */
-    public void UpdateCharactersPositions()
+    
+    public void UpdateCharactersPositions(bool forced)
     {
-        for (int i = 0; i < _characters.Length; i++)
-        {          
-            updateCharacterPosition(_characters[i], mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones);                
+        if (forced)
+        {
+            for (int i = 0; i < _characters.Length; i++)
+            {
+                Vector3 newPosition = mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones[0].position;
+                _characters[i].transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
+            }
+
+            Messenger.Broadcast(ViewEvent.COMPLETE);
         }
-    }
+        else
+        {
+            for (int i = 0; i < _characters.Length; i++)
+            {
+                updateCharacterPosition(_characters[i], mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones);
+            }
+        }
+    }    
 
-    protected void updateCharacterPosition(Character character, MilestoneVO[] milestones)//List<MilestoneVO> milestones)
+    protected void updateCharacterPosition(Character character, MilestoneVO[] milestones)
     {
-        //if (milestones.Count > 0)
         if (milestones.Length > 0)
         {
             StartCoroutine(MoveToNextMilestone(character, milestones));
             return;
         }
-        
+
         _charactersPositionsUpdated++;
         if (_charactersPositionsUpdated == _characters.Length)
         {
