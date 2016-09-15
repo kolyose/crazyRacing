@@ -1,6 +1,5 @@
 using UnityEngine;
-using System.Collections;
-
+using UnityEngine.UI;
 public class Character : MonoBehaviour {
 
     public Material outlinedMaterial;
@@ -16,9 +15,11 @@ public class Character : MonoBehaviour {
 
     private SpriteRenderer _renderer;
     private Material _defaultMaterial;
+    private Text _tfNickname;
 
     void Awake()
     {
+        _tfNickname = transform.GetComponentInChildren<Text>();
         _renderer = GetComponent<SpriteRenderer>();
         _defaultMaterial = _renderer.material;
         Size = _renderer.bounds.size;
@@ -27,6 +28,7 @@ public class Character : MonoBehaviour {
 	public void SetData(PlayerVO data)
     {
         PlayerData = data;
+        _tfNickname.text = data.name;
     }
 
     public void displayOutline()
