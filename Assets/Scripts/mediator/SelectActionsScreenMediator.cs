@@ -21,6 +21,7 @@ public class SelectActionsScreenMediator : BaseScreenMediator
         _userActionsVO = new UserActionsVO();
 
         Messenger<uint>.AddListener(ViewEvent.SET_DISTANCE, OnSetDistance);
+        Messenger<bool>.AddListener(ViewEvent.UPDATE_BOOST_AVAILABILITY, OnUpdateBoostAvailability);
     }
 
     public void OnBoostClick()
@@ -60,6 +61,11 @@ public class SelectActionsScreenMediator : BaseScreenMediator
         _toggleBoost.isOn = false;
         _userActionsVO.direction = 0;
         _tgDirection.SetAllTogglesOff();
+    }
+
+    protected void OnUpdateBoostAvailability(bool value)
+    {
+        _toggleBoost.interactable = value;
     }
 
 }

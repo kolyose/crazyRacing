@@ -136,9 +136,10 @@ public class GameManager : MonoBehaviour {
         screensManager.ShowScreen(ScreenID.GAME_RESULTS);
     }
 
-    public void SaveRoundResults(RoundResultVO[] results)
+    public void ProcessRoundResults(RoundResultVO[] results)
     {
         mainModel.SaveRoundResults(results);
+        Messenger<bool>.Broadcast(ViewEvent.UPDATE_BOOST_AVAILABILITY, mainModel.IsBoostAllowed());
     }
 
     public bool IsGameEnd()

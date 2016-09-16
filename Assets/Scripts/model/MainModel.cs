@@ -64,7 +64,17 @@ public class MainModel : MonoBehaviour
 
     public bool IsGameEnd()
     {
-        return RoundResultsByPlayerId[User.id].place > 0;
+        return GetUserResults().place > 0;
+    }
+
+    public RoundResultVO GetUserResults()
+    {
+        return RoundResultsByPlayerId[User.id];
+    }
+
+    public bool IsBoostAllowed()
+    {
+        return !GetUserResults().boosted;
     }
 
     public CharacterVO GetActiveCharacterVO()

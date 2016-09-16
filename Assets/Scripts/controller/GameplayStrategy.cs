@@ -70,7 +70,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     private void OnRoundResultsCommand(RoundResultVO[] results)
     {
         _gameManager.HideWaitingScreen();
-        _gameManager.SaveRoundResults(results);
+        _gameManager.ProcessRoundResults(results);
 
         Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
         _gameManager.UpdateCharactersPositions();

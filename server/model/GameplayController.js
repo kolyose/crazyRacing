@@ -107,6 +107,9 @@ export default (function(){
                     const distanceAfterBoostPenalty = newRandomDistance - boostPenalty;
                     playerResults.distance = distanceAfterBoostPenalty;
                     this._setDistanceByPlayerId(playerId, playerResults.distance);
+
+                    //we need to add info is the player had use boost already as well
+                    playerResults.boosted = this._checkIfPlayerBoosted(playerId);
                 }
                 data.results.push(playerResults);
             }

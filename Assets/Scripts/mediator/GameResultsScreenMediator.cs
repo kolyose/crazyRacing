@@ -19,10 +19,12 @@ public class GameResultsScreenMediator : BaseScreenMediator
 
     protected void OnSetGameResults(SortedDictionary<uint, string> playersByPlace)
     {
+        _tfLabel.text = "Race results:";
+
         foreach (KeyValuePair<uint, string> data in playersByPlace)
         {
             string text = _tfLabel.text;
-            text = text + "\n" + data.Key + " - " + data.Value;
+            text = text + "\n" + data.Key + " place - " + data.Value;
             _tfLabel.text = text;
         }
     }
