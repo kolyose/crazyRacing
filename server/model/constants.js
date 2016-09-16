@@ -1,7 +1,9 @@
 //TODO: reading settings from database
 export const MAX_ROOM_PLAYERS = 6;
 export const FIELD_WIDTH = 6;
-export const FIELD_LENGTH = 15;
+export const FIELD_LENGTH = 10;
+export const STEP_SPEED = 1;
+export const BOOST_SPEED = 2;
 
 export const JOIN_ROOM = "JOIN_ROOM";
 export const ADD_PLAYERS = "ADD_PLAYERS";

@@ -1,12 +1,11 @@
-import {FIELD_WIDTH, FIELD_LENGTH} from './../model/constants'
+import {FIELD_WIDTH, FIELD_LENGTH, STEP_SPEED, BOOST_SPEED} from './../model/constants'
 import Debug from './../debug'
 const debug = new Debug('CR:ComputingService')
 
 export default function (data){
         return new Promise((resolve, reject) => {
 
-            const STEP_SPEED = 1;
-            const BOOST_SPEED = 3;
+
             const hasOwnProperty = Object.prototype.hasOwnProperty;
             let results = {};
             let milestonesByPlayerId = {};
@@ -38,8 +37,8 @@ export default function (data){
             while (getRemainingDistanceSum(data) > 0){
                 //1st STAGE:
                 //we need to grab only BOOSTing players by priority: from the forward player of top racetrack
-                for (let racetrackIndex=FIELD_WIDTH-1; racetrackIndex > -1; racetrackIndex--) {
-                    for (let slotIndex = FIELD_LENGTH-1; slotIndex > -1; slotIndex--) {
+                for (let slotIndex = FIELD_LENGTH-1; slotIndex > -1; slotIndex--) {
+                    for (let racetrackIndex=FIELD_WIDTH-1; racetrackIndex > -1; racetrackIndex--) {
                         let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
                         //if there is no player at current slot
                         //or the player doesn't have more distance to move
@@ -55,8 +54,8 @@ export default function (data){
 
                 //2nd STAGE:
                 //now we need to grab all players (including previously boosted ones) by the same priority
-                 for (let racetrackIndex=FIELD_WIDTH-1; racetrackIndex > -1; racetrackIndex--) {
-                    for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
+                for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
+                    for (let racetrackIndex=FIELD_WIDTH-1; racetrackIndex > -1; racetrackIndex--) {
                         let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
                         //if there is no player at current slot
                         //or the player doesn't have more distance to move
@@ -98,8 +97,7 @@ export default function (data){
 
             //after all milestones-related calculations done we need to check if there are finishers
             //and if so we need to set places for all unfinished players to make game completed
-            const finishersNumber = finishers.length; //TODO: run & test!
-            if (finishersNumber > 0) {
+            if (finishers.length > 0) {
                 for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
                     for (let racetrackIndex = FIELD_WIDTH - 1; racetrackIndex > -1; racetrackIndex--) {
                         let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
@@ -110,7 +108,7 @@ export default function (data){
                 }
 
                 //setting place prop for all players depending on their finishing order
-                for (let i=0; i<finishersNumber; i++){
+                for (let i=0; i<finishers.length; i++){
                     results[finishers[i]].place = i+1;
                 }
             }
