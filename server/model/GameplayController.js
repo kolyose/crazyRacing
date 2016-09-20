@@ -1,4 +1,4 @@
-import {FIELD_WIDTH, FIELD_LENGTH, PLAYER_ACTIONS, START_GAME, ROUND_RESULTS} from './constants';
+import {FIELD_WIDTH, FIELD_LENGTH, PLAYER_ACTIONS, START_GAME, ROUND_RESULTS, START_GAME_TIMEOUT} from './constants';
 import ComputingService from './../service/ComputingService';
 import PlayerActionsVO from './PlayerActionsVO';
 import Util from './../util';
@@ -89,7 +89,11 @@ export default (function(){
             }
             const roundResults = this._getRoundResultsData(initialDataByPlayerId);
             //debug(`START_GAME with roundResults: `, roundResults)
-            this._broadcastEventToClients(ROUND_RESULTS, roundResults);
+
+            //timeout for client to make all initial preparations/animations
+            setTimeout(() => {
+                this._broadcastEventToClients(ROUND_RESULTS, roundResults);
+            }, START_GAME_TIMEOUT);
         }
 
         _getRoundResultsData(computedResults){
