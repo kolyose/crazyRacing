@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
 
@@ -61,6 +62,11 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
 
     private void OnStartGameCommand(SettingsVO gameSettings)
     {
+        Messenger<PlayerVO[]>.RemoveListener(ServerCommand.REMOVE_PLAYERS, OnRemovePlayersCommand);
+        Messenger<PlayerVO[]>.RemoveListener(ServerCommand.ADD_PLAYERS, OnAddPlayersCommand);
+
+        Messenger<Vector3>.AddListener(ViewEvent.POSITION_UPDATED, OnUserPositionUpdated);
+
         _gameManager.StartGame(gameSettings);
     }
     
@@ -74,6 +80,11 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
 
         Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
         _gameManager.UpdateCharactersPositions();
+    }
+
+    private void OnUserPositionUpdated(Vector3 userPosition)
+    {
+        _gameManager.UpdateCameraPosition(userPosition);
     }
 
     /*
@@ -105,6 +116,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         if (_gameManager.IsGameEnd())
         {
             _gameManager.ShowGameResults();
+            Messenger<Vector3>.RemoveListener(ViewEvent.POSITION_UPDATED, OnUserPositionUpdated);
             return;
         }
 

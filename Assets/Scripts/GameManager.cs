@@ -99,7 +99,8 @@ public class GameManager : MonoBehaviour {
         mainModel.ResetGameData();
         mainModel.GameSettings = gameSettings;
 
-        camera.UpdateSettings();    
+        camera.UpdateSettings();
+        camera.ZoomToFieldLength();
 
         gameBoard.InitBackground();
         gameBoard.InitCharacters();
@@ -107,7 +108,19 @@ public class GameManager : MonoBehaviour {
 
     public void UpdateCharactersPositions()
     {
-        gameBoard.UpdateCharactersPositions(mainModel.IsNewGame);
+        if (mainModel.IsNewGame)
+        {
+            gameBoard.UpdateCharactersPositions(true);            
+        }
+        else
+        {
+            gameBoard.UpdateCharactersPositions(false);
+        }        
+    }
+
+    public void UpdateCameraPosition(Vector3 position)
+    {
+        camera.FollowUserCharacter(position, mainModel.IsNewGame);
     }
 
     public void SelectActions()

@@ -49,15 +49,6 @@ public class MainModel : MonoBehaviour
     {
         foreach (RoundResultVO result in results)
         {
-            /*for (int i=0; i<RoundPlayers.Length; i++)
-            {
-                 if (result.playerId == RoundPlayers[i].id)
-                 {
-                    MilestonesByPlayerId[result.playerId] = MilestonesByPlayerId[result.playerId].Concat(result.milestones.ToList()).ToList();                  
-                    break;
-                 }
-            }*/
-
             RoundResultsByPlayerId[result.playerId] = result;
         }
     }

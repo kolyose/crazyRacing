@@ -65,8 +65,6 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         {
             Character character = charactersFactory.GetCharacter(mainModel.RoundPlayers[i]);
             character.transform.SetParent(_charactersContainer);
-            //Vector3 newPosition = mainModel.RoundResultsByPlayerId[mainModel.RoundPlayers[i].id].milestones[0].position;
-            //character.transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
             _characters[i] = character;
 
             if (mainModel.RoundPlayers[i].id == mainModel.User.id)
@@ -129,14 +127,19 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         //updating position smoothly
         while (Mathf.Round(remainingDistance) > 0)
         {
-           Vector3 newPosition = Vector3.MoveTowards(character.Position, targetPosition, mainModel.MovingSpeed * milestoneVO.speed);          
-           character.transform.position = newPosition;
+            Vector3 newPosition = Vector3.MoveTowards(character.Position, targetPosition, mainModel.MovingSpeed * milestoneVO.speed);          
+            character.transform.position = newPosition;
             remainingDistance = (character.Position - targetPosition).magnitude;
-           yield return null;
+            
+            if (character.PlayerData.id == mainModel.User.id)
+            {
+                Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, character.transform.position);
+            }
+
+            yield return null;
         }
 
         //recursive call
-        //updateCharacterPosition(character, milestones);
         updateCharacterPosition(character, remainingMilestones);
     }
 }
