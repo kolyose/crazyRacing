@@ -5,16 +5,13 @@ public class PixelPerfectCamera : MonoBehaviour {
 
     public Camera camera;
     public float unitSize;
-    public float smoothingSpeed = 2;
+    public float smoothingSpeed = 5f;
 
     [HideInInspector]
     public MainModel mainModel;
     
     public float PixelsPerUnit { get; private set; } 
     public float Scale { get; private set; }
-
-    private Coroutine _cameraSizeCoroutine;
-    private Coroutine _cameraPositionCoroutine;
 
     void Awake() 
     {
@@ -29,82 +26,78 @@ public class PixelPerfectCamera : MonoBehaviour {
 
     public void ZoomToFieldLength(bool forced=true)
     {
-        if (!camera.orthographic) return;
-        StopAllCoroutines();
-
         float targetWidth = mainModel.GameSettings.fieldLength * unitSize;
         float targetHeight = Mathf.RoundToInt(targetWidth / (float)Screen.width * Screen.height);
         float targetSize = targetHeight / PixelsPerUnit / 2;
         Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, -10.0f);
 
-        if (forced)
-        {
-            camera.orthographicSize = targetSize;
-            camera.transform.position = targetPosition;
-        }
-        else
-        { 
-            StartCoroutine(UpdateCameraSizeSmoothly(targetSize));
-            StartCoroutine(UpdateCameraPositionSmoothly(targetPosition));
-        }
+        AdjustCamera(targetSize, targetPosition, forced);
     }
 
-    public void FollowUserCharacter(Vector3 characterPosition, bool forced=true)
+    public void FollowUserCharacter(Vector3 position, bool forced=true)
+    {
+        float targetHeight = mainModel.GameSettings.fieldWidth * unitSize;
+        float targetSize = targetHeight / PixelsPerUnit / 2;
+        float targetX = position.x;               
+        Vector3 targetPosition = new Vector3(targetX, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, -10);
+
+        AdjustCamera(targetSize, targetPosition, forced);
+    }
+
+    private void AdjustCamera(float targetSize, Vector3 targetPosition, bool forced=true)
     {
         if (!camera.orthographic) return;
         StopAllCoroutines();
 
-        float targetHeight = mainModel.GameSettings.fieldWidth * unitSize;
-        float targetSize = targetHeight / PixelsPerUnit / 2;
-        float targetX = characterPosition.x;
-        
-        if (targetX < (float)Screen.width / PixelsPerUnit / 2)
-        {
-            targetX = (float)Screen.width / PixelsPerUnit / 2;
-        }
-        else if (targetX > mainModel.GameSettings.fieldLength * unitSize - (float)Screen.width/ PixelsPerUnit /2)
-        {
-            targetX = mainModel.GameSettings.fieldLength * unitSize - (float)Screen.width / PixelsPerUnit / 2;
-        }
-               
-        Vector3 targetPosition = new Vector3(targetX, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, -10);
-
         if (forced)
         {
             camera.orthographicSize = targetSize;
-            camera.transform.position = targetPosition;            
+            camera.transform.position = ClampCameraPosition(targetPosition);
         }
         else
-        {            
-            StartCoroutine(UpdateCameraSizeSmoothly(targetSize));
-            StartCoroutine(UpdateCameraPositionSmoothly(targetPosition));            
+        {
+            StartCoroutine(ZoomCameraSmoothly(targetSize));
+            StartCoroutine(MoveCameraSmoothly(targetPosition));
         }
     }
 
-    private IEnumerator UpdateCameraSizeSmoothly(float newSize)
+    private Vector3 ClampCameraPosition(Vector3 position)
     {
-        Vector3 oldPosition = camera.transform.position;
-        float remainingSize = Mathf.Round(Mathf.Abs(camera.orthographicSize - newSize));
-        if (remainingSize == 0) yield break;                
+        float screenRatio = (float)Screen.width / Screen.height;
+        float cameraViewWidthHalf = screenRatio * camera.orthographicSize;
 
-        while (remainingSize > 0)
+        if (position.x < cameraViewWidthHalf)
         {
-            camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, newSize, Time.deltaTime * smoothingSpeed);
-            remainingSize = Mathf.Round(Mathf.Abs(camera.orthographicSize - newSize));
-            camera.transform.position = oldPosition;
+            position.x = cameraViewWidthHalf;
+        }
+        else if (position.x > mainModel.GameSettings.fieldLength * unitSize - cameraViewWidthHalf)
+        {
+            position.x = mainModel.GameSettings.fieldLength * unitSize - cameraViewWidthHalf;
+        }
+
+        return position;
+    }
+
+    private IEnumerator ZoomCameraSmoothly(float newSize)
+    {
+        float currentSize = camera.orthographicSize;
+        float totalRange = Mathf.Round(camera.orthographicSize - newSize);
+        for (float step = totalRange / smoothingSpeed, remainingRange = step; Mathf.Abs(remainingRange) != totalRange; remainingRange += step)
+        {
+            float percentage = remainingRange / totalRange;
+            camera.orthographicSize = Mathf.Lerp(currentSize, newSize, Mathf.Abs(percentage));       
             yield return null;
         }
     }
 
-    private IEnumerator UpdateCameraPositionSmoothly(Vector3 newPosition)
+    private IEnumerator MoveCameraSmoothly(Vector3 newPosition)
     {
-        float remainingDistance = Mathf.Round(Mathf.Abs(camera.transform.position.x - newPosition.x));
-        if (remainingDistance == 0) yield break;
-
-        while (remainingDistance > 0)
+        Vector3 currentPosition = camera.transform.position;
+        float totalDistance = Vector3.Distance(camera.transform.position, newPosition);
+        for (float step = totalDistance / smoothingSpeed, remainingDistance = step; remainingDistance <= totalDistance; remainingDistance += step)
         {
-            camera.transform.position = Vector3.Lerp(camera.transform.position, newPosition, Time.deltaTime * smoothingSpeed);
-            remainingDistance = Mathf.Round(Mathf.Abs(camera.transform.position.x - newPosition.x));
+            float percentage = remainingDistance / totalDistance;            
+            camera.transform.position = ClampCameraPosition(Vector3.Lerp(camera.transform.position, newPosition, percentage));
             yield return null;
         }
     }

@@ -9,4 +9,5 @@ public static class ViewEvent
     public const string RESET_SCREEN = "ViewEvent.RESET_SCREEN";
     public const string UPDATE_BOOST_AVAILABILITY = "ViewEvent.UPDATE_BOOST_AVAILABILITY";
     public const string POSITION_UPDATED = "ViewEvent.POSITION_UPDATED";
+    public const string ZOOM_COMPLETE = "ViewEvent.ZOOM_COMPLETE";
 }

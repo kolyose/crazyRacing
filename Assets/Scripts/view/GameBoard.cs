@@ -133,7 +133,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             
             if (character.PlayerData.id == mainModel.User.id)
             {
-                Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, character.transform.position);
+                Vector3 position = character.transform.position;
+                position.x += character.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+                Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, position);
             }
 
             yield return null;

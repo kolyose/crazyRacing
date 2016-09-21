@@ -475,6 +475,10 @@ Prefab:
       propertyPath: MovingSpeed
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 11430620, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
+      propertyPath: smoothingSpeed
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
   m_IsPrefabParent: 0
