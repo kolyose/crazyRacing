@@ -5,6 +5,7 @@ public enum ScreenID
     NONE,
     LOGIN,
     WAITING_FOR_PLAYERS,
+    SELECT_CHARACTERS,  
     SELECT_ACTIONS,
     SIMULATION,
     GAME_RESULTS

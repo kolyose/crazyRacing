@@ -7,13 +7,14 @@ export default (function(){
 
     let _id          = new WeakMap();
     let _name        = new WeakMap();
-    let _characterID = new WeakMap();
+    let _characterId = new WeakMap();
 
     class PlayerVO{
-        constructor({id, name}){
-            debug(`PlayerVO id=${id} name=${name}`);
+        constructor({id, name, characterData: {characterId}}){
+            debug(`PlayerVO id=${id} name=${name} characterId=${characterId}`);
             _id.set(this, id);
             _name.set(this, name);
+            _characterId.set(this, characterId);
         }
 
         get id(){
@@ -23,9 +24,13 @@ export default (function(){
         get name(){
             return _name.get(this);
         }
+        
+         get characterId(){
+            return _characterId.get(this);
+        }
 
         toObject(){
-            return {id:this.id, name:this.name};
+            return {id:this.id, name:this.name, characterData:{characterId: this.characterId}};
         }
     }
 

@@ -2,5 +2,11 @@ using System;
 
 [Serializable]
 public class CharacterVO {
-    public uint pictureId;
+
+    public uint characterId;
+
+    public CharacterVO(uint id)
+    {
+        characterId = id;
+    }
 }

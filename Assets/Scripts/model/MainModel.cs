@@ -68,14 +68,6 @@ public class MainModel : MonoBehaviour
         return !GetUserResults().boosted;
     }
 
-    public CharacterVO GetActiveCharacterVO()
-    {
-        //TODO: remove hardcode
-        CharacterVO characterVO = new CharacterVO();
-        characterVO.pictureId = 1;
-        return characterVO;
-    }
-
     public SortedDictionary<uint, string> GetPlayersByPlace()
     {
         SortedDictionary<uint, string> playersByPlace = new SortedDictionary<uint, string>();

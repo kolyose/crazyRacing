@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: 2D_outline
   m_Shader: {fileID: 4800000, guid: 3ecbfbf99a8532f45be81021ad057d43, type: 3}
-  m_ShaderKeywords: _EMISSION
+  m_ShaderKeywords: PIXELSNAP_ON _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -72,7 +72,7 @@ Material:
     m_Floats:
     - first:
         name: PixelSnap
-      second: 0
+      second: 1
     - first:
         name: _BumpScale
       second: 1
@@ -105,7 +105,7 @@ Material:
       second: 1
     - first:
         name: _OutlineOffSet
-      second: 1
+      second: 3
     - first:
         name: _Parallax
       second: 0.02
@@ -127,7 +127,7 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 1, g: 0.8482759, b: 0, a: 1}
+      second: {r: 1, g: 0, b: 0, a: 1}
     - first:
         name: _Color2
       second: {r: 1, g: 1, b: 1, a: 1}

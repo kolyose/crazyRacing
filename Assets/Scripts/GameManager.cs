@@ -79,6 +79,16 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    public void ShowSelectCharactersScreen()
+    {
+        screensManager.ShowScreen(ScreenID.SELECT_CHARACTERS);
+    }
+
+    public void HideSelectCharactersScreen()
+    {
+        screensManager.HideScreen(ScreenID.SELECT_CHARACTERS);
+    }
+
     public void ShowWaitingScreen()
     {
         screensManager.ShowScreen(ScreenID.WAITING_FOR_PLAYERS);
@@ -87,6 +97,11 @@ public class GameManager : MonoBehaviour {
     public void HideWaitingScreen()
     {
         screensManager.HideScreen(ScreenID.WAITING_FOR_PLAYERS);
+    }
+
+    public void SaveCharacterId(uint characterId)
+    {
+        mainModel.User.characterData = new CharacterVO(characterId);
     }
 
     public void JoinRoom(string roomID)

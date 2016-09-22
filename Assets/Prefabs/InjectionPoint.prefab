@@ -59,9 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7aa8ad858a905848800794dc45236ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FieldLength: 10
-  FieldWidth: 6
-  MovingSpeed: 4
+  MovingSpeed: 8
 --- !u!114 &11430620
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -75,6 +73,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 0}
   unitSize: 128
+  smoothingSpeed: 10
   mainModel: {fileID: 0}
 --- !u!114 &11438600
 MonoBehaviour:
@@ -129,7 +128,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterPrefabs:
-  - {fileID: 121414, guid: 82fe4ae3882d8b249976ab35a91abd10, type: 2}
+  - {fileID: 1000012519946622, guid: d59381ca5bf07864db2c4eb7b4ff9c7a, type: 2}
+  - {fileID: 1000013240021810, guid: f62e73f8dab3bcc46befceccefa0c95d, type: 2}
+  - {fileID: 1000013592158424, guid: 6261148bfe54e34409fed238b6771b5a, type: 2}
+  - {fileID: 1000012499698666, guid: a320242c9e31ee241955216a32304c5a, type: 2}
+  - {fileID: 1000010386292244, guid: 2d7947210f461cc41a61c331c38b3f7a, type: 2}
+  - {fileID: 1000011632349230, guid: 149832419fddd7b448fc1098b8b1d614, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

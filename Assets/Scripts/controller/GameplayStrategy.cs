@@ -30,12 +30,25 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     public void OnLoginCommand(PlayerVO playerVO)
     {
         Messenger<PlayerVO>.RemoveListener(ServerCommand.LOGIN, OnLoginCommand);
+        Messenger<uint>.AddListener(GameEvent.CHARACTER_SELECTED, OnCharacterSelected);
 
         _gameManager.SaveUserData(playerVO);
+        _gameManager.ShowSelectCharactersScreen();
+
 
         //TODO: add functionality for characters selection
         //TODO: add functionality for private rooms creation
         //TODO: add functionality for joining to specific private rooms
+        //JoinRoom();
+
+        
+    }
+
+    private void OnCharacterSelected(uint characterId)
+    {
+        Messenger<uint>.RemoveListener(GameEvent.CHARACTER_SELECTED, OnCharacterSelected);
+        _gameManager.HideSelectCharactersScreen();
+        _gameManager.SaveCharacterId(characterId);
         JoinRoom();
     }
 

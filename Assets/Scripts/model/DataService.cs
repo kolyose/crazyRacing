@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using SocketIO;
 using System.Collections.Generic;
 
@@ -50,7 +50,8 @@ public class DataService : MonoBehaviour, IDataService
         socket.On(ServerCommand.ADD_PLAYERS, OnAddPlayers);
         socket.On(ServerCommand.START_GAME, OnStartGame);
         socket.On(ServerCommand.ROUND_RESULTS, OnRoundResults);
-        socket.Emit(ServerCommands.JOIN_ROOM, new JSONObject(JsonUtility.ToJson(commandVO)));
+        string json = JsonUtility.ToJson(commandVO);
+        socket.Emit(ServerCommands.JOIN_ROOM, new JSONObject(json));
     }
 
     private void OnAddPlayers(SocketIOEvent evt)
