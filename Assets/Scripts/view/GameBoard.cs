@@ -63,8 +63,6 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
         for (int i = 0; i < length; i++)
         {
-            //TODO: fix other characters are invisible
-            //TODO: adjust characters' position|pivot point in order to center them within cell
             Character character = charactersFactory.GetCharacter(mainModel.RoundPlayers[i]);
             character.transform.SetParent(_charactersContainer);
             character.transform.position = new Vector3(-CELL_SIZE, -CELL_SIZE, 0);
