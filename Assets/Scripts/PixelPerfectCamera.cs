@@ -29,7 +29,7 @@ public class PixelPerfectCamera : MonoBehaviour {
         float targetWidth = mainModel.GameSettings.fieldLength * unitSize;
         float targetHeight = Mathf.RoundToInt(targetWidth / (float)Screen.width * Screen.height);
         float targetSize = targetHeight / PixelsPerUnit / 2;
-        Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, -10.0f);
+        Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, camera.transform.position.z);
 
         AdjustCamera(targetSize, targetPosition, forced);
     }
@@ -39,7 +39,7 @@ public class PixelPerfectCamera : MonoBehaviour {
         float targetHeight = mainModel.GameSettings.fieldWidth * unitSize;
         float targetSize = targetHeight / PixelsPerUnit / 2;
         float targetX = position.x;               
-        Vector3 targetPosition = new Vector3(targetX, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, -10);
+        Vector3 targetPosition = new Vector3(targetX, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, camera.transform.position.z);
 
         AdjustCamera(targetSize, targetPosition, forced);
     }
@@ -82,6 +82,9 @@ public class PixelPerfectCamera : MonoBehaviour {
     {
         float currentSize = camera.orthographicSize;
         float totalRange = Mathf.Round(camera.orthographicSize - newSize);
+
+        if (totalRange == 0) yield break;
+
         for (float step = totalRange / smoothingSpeed, remainingRange = step; Mathf.Abs(remainingRange) != totalRange; remainingRange += step)
         {
             float percentage = remainingRange / totalRange;
@@ -94,10 +97,15 @@ public class PixelPerfectCamera : MonoBehaviour {
     {
         Vector3 currentPosition = camera.transform.position;
         float totalDistance = Vector3.Distance(camera.transform.position, newPosition);
+
+        if (totalDistance == 0) yield break;
+
         for (float step = totalDistance / smoothingSpeed, remainingDistance = step; remainingDistance <= totalDistance; remainingDistance += step)
         {
-            float percentage = remainingDistance / totalDistance;            
-            camera.transform.position = ClampCameraPosition(Vector3.Lerp(camera.transform.position, newPosition, percentage));
+            float percentage = remainingDistance / totalDistance;
+            Vector3 lerpedPosition = Vector3.Lerp(camera.transform.position, newPosition, percentage);
+            Vector3 clampedPosition = ClampCameraPosition(lerpedPosition);
+            camera.transform.position = clampedPosition;      
             yield return null;
         }
     }
