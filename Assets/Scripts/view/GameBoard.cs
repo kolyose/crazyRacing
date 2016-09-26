@@ -56,22 +56,32 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             }
 		}
 
-        /*positionX = positionY = 0;
-        do
+        positionX = positionY = 0;
+        float tribunesPixelWidth = camera.orthographicSize - mainModel.GameSettings.fieldWidth * camera.unitSize / 2;
+        
+        while (true)
         {
-            for (int j = 0; j < mainModel.GameSettings.fieldLength; j++)
+            while (true)
             {
-                positionX = camera.unitSize * j;
                 GameObject tribunesTileInstance = Instantiate(tribunesTile, new Vector3(positionX, positionY, 0), Quaternion.identity) as GameObject;
                 tribunesTileInstance.transform.SetParent(_backgroundContainer);
                 tribunesTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
+                positionX += tribunesTile.GetComponent<SpriteRenderer>().bounds.size.x;
+
+                if (positionX > mainModel.GameSettings.fieldLength * camera.unitSize)
+                {
+                    break;
+                }
             }
 
-            positionY += camera.unitSize;
-
-        } while (positionY < camera.camera.orthographicSize);
-        */
-        //_backgroundContainer.position = new Vector3( _backgroundContainer.localPosition.x, _tilesContainer.transform.localScale.y,  _backgroundContainer.localPosition.z);
+            positionX = 0;
+            positionY += tribunesTile.GetComponent<SpriteRenderer>().bounds.size.y;
+            if (positionY > tribunesPixelWidth)
+            {
+                _backgroundContainer.position = new Vector3(_backgroundContainer.localPosition.x, mainModel.GameSettings.fieldWidth * camera.unitSize, _backgroundContainer.localPosition.z);
+                break;               
+            }
+        }       
 	}
 
     public void InitCharacters()
