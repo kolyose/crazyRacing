@@ -14,13 +14,14 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
     public GameObject viewContainer;	
     public GameObject[] groundTiles;
+    public GameObject tribunesTile;
 
     private Character[] _characters;
-    private float CELL_SIZE;
+    //private float CELL_SIZE;
     private uint _charactersPositionsUpdated;
     private Transform _charactersContainer;
     private Transform _tilesContainer;
-    private GameObject _selectActionsScreen;
+    private Transform _backgroundContainer;
 
     void Awake() 
     {
@@ -30,11 +31,12 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
         _charactersContainer = viewContainer.transform.FindChild("Characters").transform;
         _tilesContainer = viewContainer.transform.FindChild("Tiles").transform;
+        _backgroundContainer = viewContainer.transform.FindChild("Background").transform;
     }
 
   	public void InitBackground() {
 
-        CELL_SIZE = groundTiles[0].GetComponent<SpriteRenderer>().bounds.size.x * camera.Scale;
+        //CELL_SIZE = groundTiles[0].GetComponent<SpriteRenderer>().bounds.size.x * camera.Scale;
 
 		float positionX = 0.0f;
         float positionY = 0.0f;
@@ -45,15 +47,31 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 			{				
                 GameObject grassTile = groundTiles[i % 2];				
 				SpriteRenderer renderer = grassTile.GetComponent<SpriteRenderer>();
-                positionX = CELL_SIZE * j;
-                positionY = CELL_SIZE * i;
+                positionX = camera.unitSize * j;
+                positionY = camera.unitSize * i;
 				
 				GameObject grassTileInstance = Instantiate(grassTile, new Vector3(positionX,positionY,0.0f), Quaternion.identity) as GameObject;
                 grassTileInstance.transform.SetParent(_tilesContainer);
                 grassTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
-
             }
 		}
+
+        /*positionX = positionY = 0;
+        do
+        {
+            for (int j = 0; j < mainModel.GameSettings.fieldLength; j++)
+            {
+                positionX = camera.unitSize * j;
+                GameObject tribunesTileInstance = Instantiate(tribunesTile, new Vector3(positionX, positionY, 0), Quaternion.identity) as GameObject;
+                tribunesTileInstance.transform.SetParent(_backgroundContainer);
+                tribunesTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
+            }
+
+            positionY += camera.unitSize;
+
+        } while (positionY < camera.camera.orthographicSize);
+        */
+        //_backgroundContainer.position = new Vector3( _backgroundContainer.localPosition.x, _tilesContainer.transform.localScale.y,  _backgroundContainer.localPosition.z);
 	}
 
     public void InitCharacters()
@@ -65,7 +83,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         {
             Character character = charactersFactory.GetCharacter(mainModel.RoundPlayers[i]);
             character.transform.SetParent(_charactersContainer);
-            character.transform.position = new Vector3(-CELL_SIZE, -CELL_SIZE, 0);
+            character.transform.position = new Vector3(-camera.unitSize, -camera.unitSize, 0);
             _characters[i] = character;
 
             if (mainModel.RoundPlayers[i].id == mainModel.User.id)
@@ -82,7 +100,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             for (int i = 0; i < _characters.Length; i++)
             {
                 Vector3 newPosition = mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones[0].position;
-                _characters[i].transform.position = new Vector3(newPosition.x * CELL_SIZE, newPosition.y * CELL_SIZE, newPosition.z);
+                _characters[i].transform.position = new Vector3(newPosition.x * camera.unitSize, newPosition.y * camera.unitSize, newPosition.z);
             }
 
             Messenger.Broadcast(ViewEvent.COMPLETE);
@@ -122,7 +140,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         Array.Copy(milestones, 1, remainingMilestones, 0, remainingLength);
 
         //calculating target position and a distance to it
-        Vector3 targetPosition = milestoneVO.position * CELL_SIZE;
+        Vector3 targetPosition = milestoneVO.position * camera.unitSize;
         float remainingDistance = (character.Position - targetPosition).magnitude;
 
         //updating position smoothly
