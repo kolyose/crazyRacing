@@ -13,6 +13,12 @@ public class PixelPerfectCamera : MonoBehaviour {
     public float PixelsPerUnit { get; private set; } 
     public float Scale { get; private set; }
 
+    public float orthographicSize { get 
+        {
+            return camera.orthographicSize;
+        }
+    }
+
     void Awake() 
     {
         if (mainModel == null) mainModel = GetComponent<MainModel>();
@@ -36,7 +42,7 @@ public class PixelPerfectCamera : MonoBehaviour {
 
     public void FollowUserCharacter(Vector3 position, bool forced=true)
     {
-        float targetHeight = mainModel.GameSettings.fieldWidth * unitSize;
+        float targetHeight = (mainModel.GameSettings.fieldWidth + 2) * unitSize;
         float targetSize = targetHeight / PixelsPerUnit / 2;
         float targetX = position.x;               
         Vector3 targetPosition = new Vector3(targetX, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, camera.transform.position.z);
