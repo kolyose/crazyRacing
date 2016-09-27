@@ -15,6 +15,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     public GameObject viewContainer;	
     public GameObject[] groundTiles;
     public GameObject tribunesTile;
+    public GameObject finishTile;
 
     private Character[] _characters;
     //private float CELL_SIZE;
@@ -34,29 +35,35 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         _backgroundContainer = viewContainer.transform.FindChild("Background").transform;
     }
 
-  	public void InitBackground() {
-
-        //CELL_SIZE = groundTiles[0].GetComponent<SpriteRenderer>().bounds.size.x * camera.Scale;
-
-		float positionX = 0.0f;
+    public void InitTiles()
+    {
+        float positionX = 0.0f;
         float positionY = 0.0f;
-        
-        for (int i = 0; i < mainModel.GameSettings.fieldWidth; i++) 
-		{
+
+        for (int i = 0; i < mainModel.GameSettings.fieldWidth; i++)
+        {
             for (int j = 0; j < mainModel.GameSettings.fieldLength; j++)
-			{				
-                GameObject grassTile = groundTiles[i % 2];				
-				SpriteRenderer renderer = grassTile.GetComponent<SpriteRenderer>();
+            {
+                GameObject grassTile = groundTiles[i % 2];
+                SpriteRenderer renderer = grassTile.GetComponent<SpriteRenderer>();
                 positionX = camera.unitSize * j;
                 positionY = camera.unitSize * i;
-				
-				GameObject grassTileInstance = Instantiate(grassTile, new Vector3(positionX,positionY,0.0f), Quaternion.identity) as GameObject;
+
+                GameObject grassTileInstance = Instantiate(grassTile, new Vector3(positionX, positionY, 0.0f), Quaternion.identity) as GameObject;
                 grassTileInstance.transform.SetParent(_tilesContainer);
                 grassTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
             }
-		}
+        }
 
-        positionX = positionY = 0;
+        positionY = camera.unitSize * mainModel.GameSettings.fieldWidth - camera.unitSize/4;
+        GameObject finishTileInstance = Instantiate(finishTile, new Vector3(positionX, positionY, 0.0f), Quaternion.identity) as GameObject;
+        finishTileInstance.transform.SetParent(_tilesContainer);
+    }
+
+  	public void InitBackground() 
+    {
+        float positionX = 0.0f;
+        float positionY = 0.0f;
         float tribunesPixelWidth = camera.orthographicSize - mainModel.GameSettings.fieldWidth * camera.unitSize / 2;
         
         while (true)

@@ -118,6 +118,7 @@ public class GameManager : MonoBehaviour {
         camera.ZoomToFieldLength();
 
         gameBoard.InitBackground();
+        gameBoard.InitTiles();
         gameBoard.InitCharacters();
     }
 

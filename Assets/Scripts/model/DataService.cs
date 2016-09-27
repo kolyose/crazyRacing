@@ -67,6 +67,7 @@ public class DataService : MonoBehaviour, IDataService
         string rawData = evt.data["data"].ToString();
         Debug.Log("START_GAME: " + rawData);
         SettingsVO settings = dataParser.GetSettingsData(rawData);
+        settings.fieldLength += 1; //enlarging field for finish line
         Messenger<SettingsVO>.Broadcast(ServerCommand.START_GAME, settings);
     }
 
