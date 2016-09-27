@@ -7,4 +7,5 @@ public interface IGameBoard
     void InitTiles();
     void InitCharacters(); 
     void UpdateCharactersPositions(bool forced);
+    void DisplayCharactersAnimation(AnimationState animationState, bool value);
 }

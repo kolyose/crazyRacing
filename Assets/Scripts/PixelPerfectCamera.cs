@@ -35,7 +35,7 @@ public class PixelPerfectCamera : MonoBehaviour {
         float targetWidth = mainModel.GameSettings.fieldLength * unitSize;
         float targetHeight = Mathf.RoundToInt(targetWidth / (float)Screen.width * Screen.height);
         float targetSize = targetHeight / PixelsPerUnit / 2;
-        Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, (float)(mainModel.GameSettings.fieldWidth * unitSize) / 2.0f / PixelsPerUnit, camera.transform.position.z);
+        Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, (float)(mainModel.GameSettings.fieldWidth * unitSize) / PixelsPerUnit, camera.transform.position.z);
 
         AdjustCamera(targetSize, targetPosition, forced);
     }

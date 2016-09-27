@@ -122,22 +122,29 @@ public class GameManager : MonoBehaviour {
         gameBoard.InitCharacters();
     }
 
-    public void UpdateCharactersPositions()
+    public void StartMoving()
     {
+        //!!! mainModel.IsNewGame getter acts like trigger, so we must to call it once. In other case the second call will return a result opposite to the first call's one
         if (mainModel.IsNewGame)
         {
-            gameBoard.UpdateCharactersPositions(true);            
+            gameBoard.UpdateCharactersPositions(true);
         }
         else
         {
             gameBoard.UpdateCharactersPositions(false);
-        }        
+            gameBoard.DisplayCharactersAnimation(AnimationState.Running, true);
+        }      
+    }  
+
+    public void StopMoving()
+    {
+        gameBoard.DisplayCharactersAnimation(AnimationState.Running, false);
     }
 
     public void UpdateCameraPosition(Vector3 position)
     {
         camera.FollowUserCharacter(position, mainModel.IsNewGame);
-    }
+    }   
 
     public void SelectActions()
     {

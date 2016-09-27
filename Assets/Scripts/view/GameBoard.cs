@@ -64,7 +64,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     {
         float positionX = 0.0f;
         float positionY = 0.0f;
-        float tribunesPixelWidth = camera.orthographicSize - mainModel.GameSettings.fieldWidth * camera.unitSize / 2;
+        float tribunesPixelWidth = camera.orthographicSize * 2 - mainModel.GameSettings.fieldWidth * camera.unitSize;
         
         while (true)
         {
@@ -80,13 +80,16 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                     break;
                 }
             }
-
-            positionX = 0;
-            positionY += tribunesTile.GetComponent<SpriteRenderer>().bounds.size.y;
-            if (positionY > tribunesPixelWidth)
+                 
+            if (positionY < tribunesPixelWidth)
+            {
+                positionX = 0;      
+                positionY += tribunesTile.GetComponent<SpriteRenderer>().bounds.size.y;        
+            }
+            else
             {
                 _backgroundContainer.position = new Vector3(_backgroundContainer.localPosition.x, mainModel.GameSettings.fieldWidth * camera.unitSize, _backgroundContainer.localPosition.z);
-                break;               
+                break;  
             }
         }       
 	}
@@ -105,11 +108,19 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
             if (mainModel.RoundPlayers[i].id == mainModel.User.id)
             {
-                character.displayOutline();
+                character.DisplayOutline();
             }
         }
     }
     
+    public void DisplayCharactersAnimation(AnimationState animationState, bool value)
+    {
+        foreach (Character character in _characters)
+        {
+            character.DisplayAnimation(animationState, value);
+        }
+    }
+
     public void UpdateCharactersPositions(bool forced)
     {
         if (forced)
