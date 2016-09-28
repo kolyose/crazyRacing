@@ -8,4 +8,5 @@ public interface IGameBoard
     void InitCharacters(); 
     void UpdateCharactersPositions(bool forced);
     void DisplayCharactersAnimation(AnimationState animationState, bool value);
+    Vector3 GetUserCharacterPosition();
 }

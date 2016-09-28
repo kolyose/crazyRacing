@@ -1,6 +1,8 @@
 using UnityEngine;
-using System.Linq;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameManager : MonoBehaviour {
     
@@ -121,13 +123,14 @@ public class GameManager : MonoBehaviour {
         gameBoard.InitTiles();
         gameBoard.InitCharacters();
     }
-
+   
     public void StartMoving()
     {
         //!!! mainModel.IsNewGame getter acts like trigger, so we must to call it once. In other case the second call will return a result opposite to the first call's one
         if (mainModel.IsNewGame)
         {
             gameBoard.UpdateCharactersPositions(true);
+            setTimeout(camera.ZoomToFieldWidth, 2);
         }
         else
         {
@@ -139,6 +142,18 @@ public class GameManager : MonoBehaviour {
     public void StopMoving()
     {
         gameBoard.DisplayCharactersAnimation(AnimationState.Running, false);
+    }
+
+    public void setTimeout(Action callback, float timeout)
+    {
+        StartCoroutine(WaitForSecondsCoroutine(callback, timeout));
+    }
+
+    private IEnumerator WaitForSecondsCoroutine(Action callback, float timeout)
+    {
+        yield return new WaitForSeconds(timeout);
+        callback();
+        yield break;
     }
 
     public void UpdateCameraPosition(Vector3 position)

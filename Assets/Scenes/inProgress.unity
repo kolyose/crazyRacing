@@ -187,11 +187,6 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 223000011872140366, guid: 9b1c2e013f9d1ed4285135007dec9364,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9b1c2e013f9d1ed4285135007dec9364, type: 2}
   m_IsPrefabParent: 0
@@ -296,6 +291,15 @@ Prefab:
         type: 2}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000012795580142, guid: c136e670e64fda34d95837a7e5181260, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 223000012171335912, guid: c136e670e64fda34d95837a7e5181260,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c136e670e64fda34d95837a7e5181260, type: 2}
@@ -1035,6 +1039,15 @@ Prefab:
       propertyPath: m_SizeDelta.y
       value: 120
       objectReference: {fileID: 0}
+    - target: {fileID: 223000011810615702, guid: a9b8b82ee8e33424f82d73a6c80201bc,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000011927921436, guid: a9b8b82ee8e33424f82d73a6c80201bc, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 224000013261252814, guid: a9b8b82ee8e33424f82d73a6c80201bc,
         type: 2}
       propertyPath: m_AnchorMin.y
@@ -1184,11 +1197,6 @@ Prefab:
         type: 2}
       propertyPath: m_SizeDelta.y
       value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 223000011810615702, guid: a9b8b82ee8e33424f82d73a6c80201bc,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a9b8b82ee8e33424f82d73a6c80201bc, type: 2}
@@ -1396,9 +1404,9 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 11491176, guid: 7ebe8b87d1eaead46ac8ff62c60a2367, type: 2}
-      propertyPath: m_AllowSwitchOff
-      value: 1
+    - target: {fileID: 22363586, guid: 7ebe8b87d1eaead46ac8ff62c60a2367, type: 2}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7ebe8b87d1eaead46ac8ff62c60a2367, type: 2}
@@ -1618,8 +1626,8 @@ MonoBehaviour:
   m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 1
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0

@@ -40,6 +40,11 @@ public class PixelPerfectCamera : MonoBehaviour {
         AdjustCamera(targetSize, targetPosition, forced);
     }
 
+    public void ZoomToFieldWidth()
+    {
+       FollowUserCharacter(Vector3.zero, false);
+    }
+
     public void FollowUserCharacter(Vector3 position, bool forced=true)
     {
         float targetHeight = (mainModel.GameSettings.fieldWidth + 2) * unitSize;

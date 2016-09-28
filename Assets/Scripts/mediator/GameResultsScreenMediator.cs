@@ -1,4 +1,4 @@
-﻿using UnityEngine.UI;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class GameResultsScreenMediator : BaseScreenMediator
@@ -19,7 +19,7 @@ public class GameResultsScreenMediator : BaseScreenMediator
 
     protected void OnSetGameResults(SortedDictionary<uint, string> playersByPlace)
     {
-        _tfLabel.text = "Race results:";
+        _tfLabel.text = "Race results:\n";
 
         foreach (KeyValuePair<uint, string> data in playersByPlace)
         {

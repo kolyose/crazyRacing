@@ -121,6 +121,19 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         }
     }
 
+    public Vector3 GetUserCharacterPosition()
+    {
+        foreach (Character character in _characters)
+        {
+            if (character.PlayerData.id == mainModel.User.id)
+            {
+                return character.Position;
+            }
+        }
+
+        return Vector3.zero;
+    }
+
     public void UpdateCharactersPositions(bool forced)
     {
         if (forced)
