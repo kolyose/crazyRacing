@@ -6,7 +6,7 @@ public interface IGameBoard
     void InitBackground();
     void InitTiles();
     void InitCharacters(); 
-    void UpdateCharactersPositions(bool forced);
+    void ProcessMilestones(bool forced);
     void DisplayCharactersAnimation(AnimationState animationState, bool value);
     Vector3 GetUserCharacterPosition();
 }

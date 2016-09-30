@@ -1,10 +1,11 @@
-import {FIELD_WIDTH, FIELD_LENGTH, STEP_SPEED, BOOST_SPEED} from './../model/constants'
+import {FIELD_WIDTH, FIELD_LENGTH, STEP_SPEED, BOOST_SPEED} from './../model/constants';
+import {MILESTONE_TYPE_MOVEMENT, MILESTONE_TYPE_BOOST} from './model/BaseMilestoneVO';
+import milestonesFactory from './model/MilestonesFactory';
 import Debug from './../debug'
 const debug = new Debug('CR:ComputingService')
 
 export default function (data){
         return new Promise((resolve, reject) => {
-
 
             const hasOwnProperty = Object.prototype.hasOwnProperty;
             let results = {};
@@ -84,6 +85,12 @@ export default function (data){
                         }
                         break;
                     }
+                    
+                    //if current milestone is not mevement-based one - we cannot to remove it
+                    if (rawMilestones[i].type !== MILESTONE_TYPE_MOVEMENT && rawMilestones[i].type !== MILESTONE_TYPE_BOOST){
+                        optimizedMilestones.push(rawMilestones[i]);
+                    }
+
                     //if milestones are on different racetracks it means there was shifting
                     //so we need both to be picked
                     if (rawMilestones[i].y !==  rawMilestones[i+1].y){
@@ -91,8 +98,11 @@ export default function (data){
                         optimizedMilestones.push(rawMilestones[i+1]);
                     }
                 }
-                //milestonesByPlayerId[playerId] = optimizedMilestones;
-                results[playerId].milestones = optimizedMilestones;
+               
+                Array.prototype.map.call(optimizedMilestones, (milestone) => {
+                    return milestone.getData();
+                });
+                results[playerId].milestones = optimizedMilestones;                
             }
 
             //after all milestones-related calculations done we need to check if there are finishers
@@ -128,19 +138,20 @@ export default function (data){
                     slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                     slotsPerRacetrack[targetRacetrackIndex][slotIndex] = playerId;
 
-                    milestonesByPlayerId[playerId].push({
-                            x: slotIndex,
-                            y:racetrackIndex,
-                            s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
-                        });
+                    // initializing milestone data
+                    let currentMilestone = (data[playerId].actions.boost) ? 
+                        milestonesFactory.getBoostMilestone(slotIndex,racetrackIndex,BOOST_SPEED) :
+                        milestonesFactory.getMovementMilestone(slotIndex, racetrackIndex);
 
-                    milestonesByPlayerId[playerId].push({
-                            x: slotIndex,
-                            y:targetRacetrackIndex,
-                            s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
-                        });
+                    //save current position
+                    milestonesByPlayerId[playerId].push(currentMilestone);
+                   
+                    //save next position
+                    const nextMilestone = milestonesFactory.cloneMilestone(currentMilestone);
+                    nextMilestone.y = targetRacetrackIndex;
+                    milestonesByPlayerId[playerId].push(nextMilestone);
 
-                     //do not forget to reset shifting request to avoid double shifting
+                    //do not forget to reset shifting request to avoid double shifting
                     data[playerId].actions.direction = 0;
                 }
                 else
@@ -148,17 +159,18 @@ export default function (data){
                     //in other case move player by 1 step forward
                     let targetSlotIndex = slotIndex + 1;
 
+                     // initializing milestone data
+                    let currentMilestone = (data[playerId].actions.boost) ? 
+                        milestonesFactory.getBoostMilestone(targetSlotIndex,racetrackIndex,BOOST_SPEED) :
+                        milestonesFactory.getMovementMilestone(targetSlotIndex, racetrackIndex);
+
                     //if a player has reached the finish line we need to save his place taken
                     //and exclude him from further calculations
                     if (targetSlotIndex >= FIELD_LENGTH){
                         finishers.push(playerId);
                         data[playerId].distance = 0;
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
-                        milestonesByPlayerId[playerId].push({
-                            x: targetSlotIndex,
-                            y: racetrackIndex,
-                            s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
-                        });
+                        milestonesByPlayerId[playerId].push(currentMilestone);
 
                         return;
                     }
@@ -168,12 +180,11 @@ export default function (data){
                     if (!slotsPerRacetrack[racetrackIndex][targetSlotIndex]){
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                         slotsPerRacetrack[racetrackIndex][targetSlotIndex] = playerId;
-
-                        milestonesByPlayerId[playerId].push({
-                                x: targetSlotIndex,
-                                y:racetrackIndex,
-                                s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
-                            });
+                        milestonesByPlayerId[playerId].push(currentMilestone);
+                    } else {
+                        //or just notify player he is blocked
+                        currentMilestone = milestonesFactory.getBlockedMilestone();
+                        milestonesByPlayerId[playerId].push(currentMilestone);
                     }
                 }
 

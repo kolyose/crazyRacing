@@ -17,9 +17,11 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     public GameObject tribunesTile;
     public GameObject finishTile;
 
+    private const float TIME_TO_PASS_UNIT = 1.0f;
+
     private Character[] _characters;
     //private float CELL_SIZE;
-    private uint _charactersPositionsUpdated;
+    private uint _characterMilestonesProcessedCounter;
     private Transform _charactersContainer;
     private Transform _tilesContainer;
     private Transform _backgroundContainer;
@@ -134,7 +136,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         return Vector3.zero;
     }
 
-    public void UpdateCharactersPositions(bool forced)
+    public void ProcessMilestones(bool forced)
     {
         if (forced)
         {
@@ -150,47 +152,77 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         {
             for (int i = 0; i < _characters.Length; i++)
             {
-                updateCharacterPosition(_characters[i], mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones);
+                processMilestonesByCharacter(_characters[i]);
             }
         }
     }    
 
-    protected void updateCharacterPosition(Character character, MilestoneVO[] milestones)
+    protected void processMilestonesByCharacter(Character character)
     {
+        MilestoneVO[] milestones = mainModel.RoundResultsByPlayerId[character.PlayerData.id].milestones;
+        //if there is milestone available we need to process it
         if (milestones.Length > 0)
         {
-            StartCoroutine(MoveToNextMilestone(character, milestones));
+            //shifting first element from the milestones array
+            MilestoneVO currentMilestoneVO = milestones[0];
+            int remainingLength = milestones.Length - 1;
+            MilestoneVO[] remainingMilestones = new MilestoneVO[remainingLength];
+            Array.Copy(milestones, 1, remainingMilestones, 0, remainingLength);
+            mainModel.RoundResultsByPlayerId[character.PlayerData.id].milestones = remainingMilestones;
+
+            //processing the element
+            switch (currentMilestoneVO.type)
+            {
+                case MilestoneType.MOVE:
+                case MilestoneType.BOOST:
+                    {
+                        StartCoroutine(MoveCharacter(character, currentMilestoneVO));
+                        break;
+                    }
+                case MilestoneType.BLOCK:
+                    {
+                        StartCoroutine(HoldCharacter(character, currentMilestoneVO));
+                        break;
+                    }
+
+                default:
+                    break;
+            }
+
+            
             return;
         }
 
-        _charactersPositionsUpdated++;
-        if (_charactersPositionsUpdated == _characters.Length)
+        //if there is no milestone available - it means all character's milestones have been processed
+        _characterMilestonesProcessedCounter++;
+        if (_characterMilestonesProcessedCounter == _characters.Length)
         {
-            _charactersPositionsUpdated = 0;
+            _characterMilestonesProcessedCounter = 0;
             Messenger.Broadcast(ViewEvent.COMPLETE);
         }
     }
 
-    protected IEnumerator MoveToNextMilestone(Character character, MilestoneVO[] milestones)//List<MilestoneVO> milestones)
-    {
-        //shifting first elements from the list
-        MilestoneVO milestoneVO = milestones[0];
-        //milestones.RemoveAt(0);
-        int remainingLength = milestones.Length - 1;
-        MilestoneVO[] remainingMilestones = new MilestoneVO[remainingLength];
-        Array.Copy(milestones, 1, remainingMilestones, 0, remainingLength);
+    protected IEnumerator MoveCharacter(Character character, MilestoneVO milestoneVO)
+    {      
+        //calculating target position and a distance to it in pixels
+        Vector3 startPosition = character.Position;
+        Vector3 endPosition = milestoneVO.position * camera.unitSize;
+        float totalDistance = Vector3.Distance(startPosition, endPosition);
+                
+        //assuming we have constant time to pass one unit (let's say 1 sec for simplicity)
+        //than total time to pass all distance in units is equal to a total distance in units divided by speed
+        //so
 
-        //calculating target position and a distance to it
-        Vector3 targetPosition = milestoneVO.position * camera.unitSize;
-        float remainingDistance = (character.Position - targetPosition).magnitude;
-
+        float totalTime = ((totalDistance / camera.unitSize) * TIME_TO_PASS_UNIT) / mainModel.MovingSpeed * milestoneVO.speed;
+        float startTime = Time.time;
+        float timePassed = Time.time - startTime;
         //updating position smoothly
-        while (Mathf.Round(remainingDistance) > 0)
+        while (totalTime > timePassed)
         {
-            Vector3 newPosition = Vector3.MoveTowards(character.Position, targetPosition, mainModel.MovingSpeed * milestoneVO.speed);          
+            Vector3 newPosition = Vector3.Lerp(startPosition, endPosition, timePassed/totalTime);          
             character.transform.position = newPosition;
-            remainingDistance = (character.Position - targetPosition).magnitude;
             
+            //if it is User's character recently moved we need camera to be centered at the character's position
             if (character.PlayerData.id == mainModel.User.id)
             {
                 Vector3 position = character.transform.position;
@@ -198,10 +230,19 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                 Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, position);
             }
 
+            timePassed = Time.time - startTime;
             yield return null;
         }
 
         //recursive call
-        updateCharacterPosition(character, remainingMilestones);
+        processMilestonesByCharacter(character);
+    }
+
+    private IEnumerator HoldCharacter(Character character, MilestoneVO milestoneVO)
+    {
+        yield return new WaitForSeconds(TIME_TO_PASS_UNIT);
+
+        //recursive call
+        processMilestonesByCharacter(character);
     }
 }

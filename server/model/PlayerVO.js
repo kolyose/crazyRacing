@@ -25,7 +25,7 @@ export default (function(){
             return _name.get(this);
         }
         
-         get characterId(){
+        get characterId(){
             return _characterId.get(this);
         }
 

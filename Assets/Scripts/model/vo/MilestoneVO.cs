@@ -2,11 +2,20 @@ using System;
 using UnityEngine;
 
 [Serializable]
+public enum MilestoneType
+{
+    MOVE=1,
+    BOOST=2,
+    BLOCK=3
+}
+
+[Serializable]
  public class MilestoneVO
  {
+     public MilestoneType type;
      public float x;
      public float y;
-     public float s;
+     public float speed=1;
     
      public Vector3 position 
      {
@@ -14,20 +23,5 @@ using UnityEngine;
          {
              return new Vector3(x, y, 0); 
          }
-     }
-
-     public float speed
-     {
-         get 
-         {           
-             return s; 
-         }
-     }
-
-     public MilestoneVO(Vector3 position, float speed) 
-     {
-         x = position.x;
-         y = position.y;
-         s = speed;
      }
  }

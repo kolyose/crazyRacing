@@ -129,12 +129,12 @@ public class GameManager : MonoBehaviour {
         //!!! mainModel.IsNewGame getter acts like trigger, so we must to call it once. In other case the second call will return a result opposite to the first call's one
         if (mainModel.IsNewGame)
         {
-            gameBoard.UpdateCharactersPositions(true);
+            gameBoard.ProcessMilestones(true);
             setTimeout(camera.ZoomToFieldWidth, 2);
         }
         else
         {
-            gameBoard.UpdateCharactersPositions(false);
+            gameBoard.ProcessMilestones(false);
             gameBoard.DisplayCharactersAnimation(AnimationState.Running, true);
         }      
     }  
