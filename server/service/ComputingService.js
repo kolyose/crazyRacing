@@ -1,10 +1,9 @@
-import {FIELD_WIDTH, FIELD_LENGTH, STEP_SPEED, BOOST_SPEED} from './../model/constants'
+import {FIELD_WIDTH, FIELD_LENGTH, STEP_SPEED, BOOST_SPEED, BLOCKED_SPEED} from './../model/constants'
 import Debug from './../debug'
 const debug = new Debug('CR:ComputingService')
 
 export default function (data){
         return new Promise((resolve, reject) => {
-
 
             const hasOwnProperty = Object.prototype.hasOwnProperty;
             let results = {};
@@ -44,11 +43,18 @@ export default function (data){
                         //or the player doesn't have more distance to move
                         //or he didn't request boost
                         //then check next slot
+                         
+                         if (playerId){
+                            debug(`playerId ${playerId} FIRST ITERATION`);
+                             debug(`distance ${data[playerId].distance} `);
+                            debug(`boost ${data[playerId].actions.boost} `);
+                        }
                         if (!playerId || data[playerId].distance == 0 || !data[playerId].actions.boost) continue;
 
                         //In other case shift a player if he requested & allowed to shifting
-                        //or move him 1 step forward
+                        //or move him 1 step forward                       
                         shiftOrMovePlayer(playerId, racetrackIndex, slotIndex);
+                        debug(`///////////////////////////////////////////////////`);
                     }
                 }
 
@@ -60,40 +66,30 @@ export default function (data){
                         //if there is no player at current slot
                         //or the player doesn't have more distance to move
                         //then check next slot
+                         if (playerId){
+                         debug(`playerId ${playerId} SECOND ITERATION`);
+                         debug(`distance ${data[playerId].distance} `);
+                         }
                         if (!playerId || data[playerId].distance == 0) continue;
 
                         //In other case shift a player if he requested & allowed to shifting
-                        //or move him 1 step forward
-                        shiftOrMovePlayer(playerId, racetrackIndex, slotIndex);
+                        //or move him 1 step forward                       
+                        shiftOrMovePlayer(playerId, racetrackIndex, slotIndex);                        
+
+                        // even if there were no shifting or moving done
+                        // we still need to update the player's remaining distance
+                        data[playerId].distance = (data[playerId].distance - 1);
+                        debug(`///////////////////////////////////////////////////`);
                     }
                 }
             }
 
             //after milestones data filled we need to optimize it by removing identical milestones
             for (let playerId in milestonesByPlayerId) if (hasOwnProperty.call(milestonesByPlayerId, playerId)){
-               // debug(`playerId: ${playerId}`)
-               // debug(`rawMilestones:`,milestonesByPlayerId[playerId])
                 let rawMilestones = milestonesByPlayerId[playerId];
-                let optimizedMilestones = [];
-                for (let i=0; ; i++){
-                    //if it's a last milestone we need to pick it
-                    //but only if it wasn't picked earlier as a shift-related one
-                    if (i === rawMilestones.length-1){
-                        if (!optimizedMilestones.length || rawMilestones[i].y === optimizedMilestones[optimizedMilestones.length-1].y){
-                            optimizedMilestones.push(rawMilestones[i]);
-                        }
-                        break;
-                    }
-                    //if milestones are on different racetracks it means there was shifting
-                    //so we need both to be picked
-                    if (rawMilestones[i].y !==  rawMilestones[i+1].y){
-                        optimizedMilestones.push(rawMilestones[i]);
-                        optimizedMilestones.push(rawMilestones[i+1]);
-                    }
-                }
-                //milestonesByPlayerId[playerId] = optimizedMilestones;
-                results[playerId].milestones = optimizedMilestones;
-            }
+                let optimizedMilestones = optimizeMilestones(rawMilestones);
+                results[playerId].milestones = rawMilestones;
+            }          
 
             //after all milestones-related calculations done we need to check if there are finishers
             //and if so we need to set places for all unfinished players to make game completed
@@ -118,15 +114,20 @@ export default function (data){
             function shiftOrMovePlayer(playerId, racetrackIndex, slotIndex){
                 //if the player had requested shifting
                 //and nobody other takes the neighbour position
+
+                debug(`playerId ${playerId} old pos: ${racetrackIndex} ${slotIndex}`)
+
                 const targetRacetrackIndex = racetrackIndex + data[playerId].actions.direction;
 
                 if (data[playerId].actions.direction !== 0
                     && slotsPerRacetrack[targetRacetrackIndex] !== undefined
-                    && slotsPerRacetrack[targetRacetrackIndex][slotIndex] === null)
+                        && slotsPerRacetrack[targetRacetrackIndex][slotIndex] === null)
                 {
                     //then we can shift the player to the position
                     slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                     slotsPerRacetrack[targetRacetrackIndex][slotIndex] = playerId;
+
+                    debug(`playerId ${playerId} new pos: ${targetRacetrackIndex} ${slotIndex}`)
 
                     milestonesByPlayerId[playerId].push({
                             x: slotIndex,
@@ -162,24 +163,77 @@ export default function (data){
 
                         return;
                     }
-
-                    // in other case we can move the player forward
+              
+                    // otherwise we can move the player forward
                     // if nobody other takes target position
                     if (!slotsPerRacetrack[racetrackIndex][targetSlotIndex]){
+
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                         slotsPerRacetrack[racetrackIndex][targetSlotIndex] = playerId;
+
+                         debug(`playerId ${playerId} new pos: ${racetrackIndex} ${targetSlotIndex}`)
 
                         milestonesByPlayerId[playerId].push({
                                 x: targetSlotIndex,
                                 y:racetrackIndex,
                                 s:(data[playerId].actions.boost ? BOOST_SPEED : STEP_SPEED)
                             });
+                    } else { // or leave the player at his place with speed decrease in case if the next position is blocked by someone else                        
+
+                        debug(`playerId ${playerId} new pos: ${racetrackIndex} ${slotIndex}`)
+
+                         milestonesByPlayerId[playerId].push({
+                                x:slotIndex,
+                                y:racetrackIndex,
+                                s:BLOCKED_SPEED
+                            });
+                    }
+                }
+            }
+
+            //TODO: REFACTOR the method in order to make it simpler, with only one round (loop) of optimizations
+            function optimizeMilestones(rawMilestones){
+                if (!rawMilestones.length) return rawMilestones;
+
+                let firstRoundResult = [],
+                    secondRoundResult = [];  
+                for (let i=0; ; i++){
+                    //if it's a last milestone we need to pick it
+                    //but only if it wasn't picked earlier as a shift-related one
+                    if (i === rawMilestones.length-1){
+                        if (!firstRoundResult.length || rawMilestones[i].y === firstRoundResult[firstRoundResult.length-1].y){
+                            firstRoundResult.push(rawMilestones[i]);
+                        }
+                        break;
+                    }
+                    //if milestones are on different racetracks it means there was shifting
+                    //or if milestone has different speed factor it means the was speed change
+                    //in both cases we need both the milestones to be picked
+                    if ((rawMilestones[i].y !== rawMilestones[i+1].y) || (rawMilestones[i].s !== rawMilestones[i+1].s)){
+                        firstRoundResult.push(rawMilestones[i]);
+                        firstRoundResult.push(rawMilestones[i+1]);
                     }
                 }
 
-                // even if there were no shifting or moving done
-                // we still need to update the player's remaining distance
-                data[playerId].distance = (data[playerId].distance - 1);
+                //second round of optimizations: we need to exclude dublicates from previous one
+                const length = firstRoundResult.length;
+                secondRoundResult.push(firstRoundResult[0]);
+                for (let i=1; i<length-1; i++){
+                    if (firstRoundResult[i].y !== firstRoundResult[i-1].y || firstRoundResult[i].s !== firstRoundResult[i-1].s){
+                        secondRoundResult.push(firstRoundResult[i]);
+                    }
+                }
+
+                const firstRoundLastElement = firstRoundResult[length-1],
+                    secondRoundLastElement = secondRoundResult[secondRoundResult.length-1];
+
+                if (firstRoundLastElement.x !== secondRoundLastElement.x 
+                    || firstRoundLastElement.y !== secondRoundLastElement.y 
+                        || firstRoundLastElement.s !== secondRoundLastElement.s){
+                            
+                            secondRoundResult.push(firstRoundResult[length-1]);
+                        }
+                return secondRoundResult;
             }
 
             function getRemainingDistanceSum(data){

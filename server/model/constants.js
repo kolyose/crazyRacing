@@ -1,7 +1,8 @@
 //TODO: reading settings from database
-export const MAX_ROOM_PLAYERS = 1;
+export const MAX_ROOM_PLAYERS = 2;
 export const FIELD_WIDTH = 6;
-export const FIELD_LENGTH = 15;
+export const FIELD_LENGTH = 20;
+export const BLOCKED_SPEED = 0;
 export const STEP_SPEED = 1;
 export const BOOST_SPEED = 2;
 
