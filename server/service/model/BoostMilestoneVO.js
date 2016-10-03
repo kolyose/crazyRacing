@@ -24,7 +24,8 @@ export default class BoostMilestoneVO extends MovementMilestoneVO{
         return obj;
     }    
 
-    getType(){
+    get type(){
+        debug(`get type BoostMilestoneVO`)
         return MILESTONE_TYPE_BOOST;
     }
 

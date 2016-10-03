@@ -26,7 +26,8 @@ export default class MovementMilestoneVO extends BaseMilestoneVO{
         return obj;
     }
 
-    getType(){
+    get type(){
+         debug(`get type MovementMilestoneVO`)
         return MILESTONE_TYPE_MOVEMENT;
     }
 

@@ -213,7 +213,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         //than total time to pass all distance in units is equal to a total distance in units divided by speed
         //so
 
-        float totalTime = ((totalDistance / camera.unitSize) * TIME_TO_PASS_UNIT) / mainModel.MovingSpeed * milestoneVO.speed;
+        float totalTime = ((totalDistance / camera.unitSize) * TIME_TO_PASS_UNIT) / (mainModel.MovingSpeed * milestoneVO.speed);
         float startTime = Time.time;
         float timePassed = Time.time - startTime;
         //updating position smoothly
@@ -240,7 +240,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
     private IEnumerator HoldCharacter(Character character, MilestoneVO milestoneVO)
     {
-        yield return new WaitForSeconds(TIME_TO_PASS_UNIT);
+        yield return new WaitForSeconds(TIME_TO_PASS_UNIT / (mainModel.MovingSpeed * milestoneVO.speed));
 
         //recursive call
         processMilestonesByCharacter(character);

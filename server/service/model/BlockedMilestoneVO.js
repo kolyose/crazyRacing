@@ -20,7 +20,8 @@ export default class BlockedMilestoneVO extends MovementMilestoneVO{
         return obj;
     }
 
-    getType(){
+    get type(){
+        debug(`get type BlockedMilestoneVO`)
         return MILESTONE_TYPE_BLOCKED;
     }
 }

@@ -13,6 +13,7 @@ export default class BaseMilestoneVO{
     }
 
     get type(){
+         debug(`get type BaseMilestoneVO`)
         return MILESTONE_TYPE_BASE;
     }  
 }

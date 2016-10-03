@@ -65,7 +65,7 @@ export default (function(){
                         let dataToCompute = this._getDataToCompute();
                         //debug(`dataToCompute: `, dataToCompute);
                         const computedResults = await ComputingService(dataToCompute);
-                        //debug(`computedResults: `, computedResults);
+                        debug(`computedResults: `, computedResults);
                         this._updatePlayersPositions(computedResults);
                         this._resetRoundData();
                         const roundResultsData = this._getRoundResultsData(computedResults);

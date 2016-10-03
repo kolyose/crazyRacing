@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7aa8ad858a905848800794dc45236ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovingSpeed: 8
+  MovingSpeed: 3
 --- !u!114 &11430620
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -74,7 +74,7 @@ MonoBehaviour:
   camera: {fileID: 0}
   unitSize: 128
   smoothingSpeed: 10
-  mainModel: {fileID: 0}
+  mainModel: {fileID: 11430406}
 --- !u!114 &11438600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -97,12 +97,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 201e973f2bf4e5946b909c5779af0e59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainModel: {fileID: 0}
-  camera: {fileID: 0}
+  mainModel: {fileID: 11430406}
+  camera: {fileID: 11430620}
   viewContainer: {fileID: 0}
   groundTiles:
   - {fileID: 122598, guid: ef51557afff91c44295c1b8dad89db1b, type: 2}
   - {fileID: 127816, guid: 2ca4c53c201c3b647917f8c77cfbbc26, type: 2}
+  tribunesTile: {fileID: 1000013388593204, guid: 2f96c565b96c9f643a7bd2d97159ab37,
+    type: 2}
+  finishTile: {fileID: 1000011490476358, guid: bfb541d04efd1f547bca34c05f01ce23, type: 2}
 --- !u!114 &11466882
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -114,8 +117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 882c11a9bffc91940882035b0214ebc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainModel: {fileID: 0}
-  camera: {fileID: 0}
+  mainModel: {fileID: 11430406}
+  camera: {fileID: 11430620}
 --- !u!114 &11482022
 MonoBehaviour:
   m_ObjectHideFlags: 1

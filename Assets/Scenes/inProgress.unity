@@ -695,29 +695,19 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 11439706, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
-      propertyPath: viewContainer
-      value: 
-      objectReference: {fileID: 641838477}
-    - target: {fileID: 11430620, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
-      propertyPath: camera
-      value: 
-      objectReference: {fileID: 1861706420}
     - target: {fileID: 114000011425014034, guid: 589e4c3502e04874d871363c60a5b9da,
         type: 2}
       propertyPath: socket
       value: 
       objectReference: {fileID: 379872988}
-    - target: {fileID: 11439706, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
-      propertyPath: tribunesTile
+    - target: {fileID: 11430620, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
+      propertyPath: camera
       value: 
-      objectReference: {fileID: 1000013388593204, guid: 2f96c565b96c9f643a7bd2d97159ab37,
-        type: 2}
+      objectReference: {fileID: 1861706420}
     - target: {fileID: 11439706, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
-      propertyPath: finishTile
+      propertyPath: viewContainer
       value: 
-      objectReference: {fileID: 1000011490476358, guid: bfb541d04efd1f547bca34c05f01ce23,
-        type: 2}
+      objectReference: {fileID: 641838477}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 589e4c3502e04874d871363c60a5b9da, type: 2}
   m_IsPrefabParent: 0

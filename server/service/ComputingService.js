@@ -102,7 +102,17 @@ export default function (data){
                 Array.prototype.map.call(optimizedMilestones, (milestone) => {
                     return milestone.getData();
                 });
-                results[playerId].milestones = optimizedMilestones;                
+
+                rawMilestones = Array.prototype.map.call(rawMilestones, (milestone) => {
+                    return milestone.getData();
+                });
+
+                results[playerId].milestones = rawMilestones; 
+               // debug(`playerId ${playerId} milestones: `)
+                
+               /* Array.prototype.forEach.call(results[playerId].milestones, (milestone) => {
+                   debug(``,milestone); 
+                });   */           
             }
 
             //after all milestones-related calculations done we need to check if there are finishers
