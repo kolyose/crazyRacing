@@ -5,8 +5,8 @@ import {MILESTONE_TYPE_MOVEMENT} from './BaseMilestoneVO';
 import Debug from './../../debug';
 const debug = new Debug('CR:service:model:MovementMilestoneVO');
 
-let _x = new WeakMap();
-let _y = new WeakMap();
+const _x = new WeakMap();
+const _y = new WeakMap();
 
 export default class MovementMilestoneVO extends BaseMilestoneVO{
     constructor(){ 
