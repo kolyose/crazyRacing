@@ -180,8 +180,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                         break;
                     }
 
-                //in case if type is undefined we need just to set initial position of character
-                default:
+               default:
                     {                       
                         break;
                     }                 
