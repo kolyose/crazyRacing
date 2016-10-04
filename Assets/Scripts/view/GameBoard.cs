@@ -136,24 +136,11 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         return Vector3.zero;
     }
 
-    public void ProcessMilestones(bool forced)
+    public void ProcessMilestones()
     {
-        if (forced)
+        for (int i = 0; i < _characters.Length; i++)
         {
-            for (int i = 0; i < _characters.Length; i++)
-            {
-                Vector3 newPosition = mainModel.RoundResultsByPlayerId[_characters[i].PlayerData.id].milestones[0].position;
-                _characters[i].transform.position = new Vector3(newPosition.x * camera.unitSize, newPosition.y * camera.unitSize, newPosition.z);
-            }
-
-            Messenger.Broadcast(ViewEvent.COMPLETE);
-        }
-        else
-        {
-            for (int i = 0; i < _characters.Length; i++)
-            {
-                processMilestonesByCharacter(_characters[i]);
-            }
+            processMilestonesByCharacter(_characters[i]);
         }
     }    
 
@@ -173,6 +160,14 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             //processing the element
             switch (currentMilestoneVO.type)
             {
+                case MilestoneType.INIT:
+                    {
+                        Vector3 newPosition = currentMilestoneVO.position;
+                        character.transform.position = new Vector3(newPosition.x * camera.unitSize, newPosition.y * camera.unitSize, newPosition.z);
+                        processMilestonesByCharacter(character);
+                        break;
+                    }
+
                 case MilestoneType.MOVE:
                 case MilestoneType.BOOST:
                     {
@@ -185,11 +180,12 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                         break;
                     }
 
+                //in case if type is undefined we need just to set initial position of character
                 default:
-                    break;
+                    {                       
+                        break;
+                    }                 
             }
-
-            
             return;
         }
 
@@ -240,7 +236,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
     private IEnumerator HoldCharacter(Character character, MilestoneVO milestoneVO)
     {
-        yield return new WaitForSeconds(TIME_TO_PASS_UNIT / (mainModel.MovingSpeed * milestoneVO.speed));
+        float waitingTime = TIME_TO_PASS_UNIT / mainModel.MovingSpeed;
+        Debug.Log("waitingTime: " + waitingTime);
+        yield return new WaitForSeconds(waitingTime);
 
         //recursive call
         processMilestonesByCharacter(character);

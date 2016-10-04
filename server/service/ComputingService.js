@@ -1,5 +1,5 @@
 import {FIELD_WIDTH, FIELD_LENGTH, STEP_SPEED, BOOST_SPEED} from './../model/constants';
-import {MILESTONE_TYPE_MOVEMENT, MILESTONE_TYPE_BOOST} from './model/BaseMilestoneVO';
+import {MILESTONE_TYPE_BLOCKED, MILESTONE_TYPE_MOVEMENT, MILESTONE_TYPE_BOOST} from './model/BaseMilestoneVO';
 import milestonesFactory from './model/MilestonesFactory';
 import Debug from './../debug'
 const debug = new Debug('CR:ComputingService')
@@ -65,7 +65,11 @@ export default function (data){
 
                         //In other case shift a player if he requested & allowed to shifting
                         //or move him 1 step forward
-                        shiftOrMovePlayer(playerId, racetrackIndex, slotIndex);
+                        shiftOrMovePlayer(playerId, racetrackIndex, slotIndex);                        
+
+                        // even if there were no shifting or moving done
+                        // we still need to update the player's remaining distance
+                        data[playerId].distance = (data[playerId].distance - 1);
                     }
                 }
             }
@@ -104,7 +108,8 @@ export default function (data){
                 });
 
                 rawMilestones = Array.prototype.map.call(rawMilestones, (milestone) => {
-                    return milestone.getData();
+                    const data = milestone.getData();
+                    return data;
                 });
 
                 results[playerId].milestones = rawMilestones; 
@@ -149,16 +154,14 @@ export default function (data){
                     slotsPerRacetrack[targetRacetrackIndex][slotIndex] = playerId;
 
                     // initializing milestone data
-                    let currentMilestone = (data[playerId].actions.boost) ? 
-                        milestonesFactory.getBoostMilestone(slotIndex,racetrackIndex,BOOST_SPEED) :
-                        milestonesFactory.getMovementMilestone(slotIndex, racetrackIndex);
+                    const MILESTONE_TYPE = (data[playerId].actions.boost) ? MILESTONE_TYPE_BOOST : MILESTONE_TYPE_MOVEMENT;
+                    const currentMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE, slotIndex, racetrackIndex);
 
                     //save current position
                     milestonesByPlayerId[playerId].push(currentMilestone);
                    
                     //save next position
-                    const nextMilestone = milestonesFactory.cloneMilestone(currentMilestone);
-                    nextMilestone.y = targetRacetrackIndex;
+                    const nextMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE, slotIndex, targetRacetrackIndex);
                     milestonesByPlayerId[playerId].push(nextMilestone);
 
                     //do not forget to reset shifting request to avoid double shifting
@@ -171,8 +174,8 @@ export default function (data){
 
                      // initializing milestone data
                     let currentMilestone = (data[playerId].actions.boost) ? 
-                        milestonesFactory.getBoostMilestone(targetSlotIndex,racetrackIndex,BOOST_SPEED) :
-                        milestonesFactory.getMovementMilestone(targetSlotIndex, racetrackIndex);
+                        milestonesFactory.getMilestoneByType(MILESTONE_TYPE_BOOST, targetSlotIndex,racetrackIndex) :
+                        milestonesFactory.getMilestoneByType(MILESTONE_TYPE_MOVEMENT, targetSlotIndex,racetrackIndex);
 
                     //if a player has reached the finish line we need to save his place taken
                     //and exclude him from further calculations
@@ -193,14 +196,10 @@ export default function (data){
                         milestonesByPlayerId[playerId].push(currentMilestone);
                     } else {
                         //or just notify player he is blocked
-                        currentMilestone = milestonesFactory.getBlockedMilestone();
+                        currentMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE_BLOCKED);
                         milestonesByPlayerId[playerId].push(currentMilestone);
                     }
                 }
-
-                // even if there were no shifting or moving done
-                // we still need to update the player's remaining distance
-                data[playerId].distance = (data[playerId].distance - 1);
             }
 
             function getRemainingDistanceSum(data){

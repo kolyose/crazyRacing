@@ -3,7 +3,8 @@ using UnityEngine;
 
 [Serializable]
 public enum MilestoneType
-{
+{   
+    INIT=0,    
     MOVE=1,
     BOOST=2,
     BLOCK=3
@@ -15,7 +16,7 @@ public enum MilestoneType
      public MilestoneType type;
      public float x;
      public float y;
-     public float speed=1;
+     public float speed;
     
      public Vector3 position 
      {

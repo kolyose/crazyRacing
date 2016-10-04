@@ -10,11 +10,10 @@ let _y = new WeakMap();
 
 export default class MovementMilestoneVO extends BaseMilestoneVO{
     constructor(){ 
-         super();       
-         debug(`MILESTONE_TYPE_MOVEMENT created`);
+         super();  
     }
 
-    setData({x,y}){
+    setData(x,y){
         this.x = x;
         this.y = y;
     }
@@ -23,11 +22,11 @@ export default class MovementMilestoneVO extends BaseMilestoneVO{
         const obj = super.getData();
         obj.x = this.x;
         obj.y = this.y;
+        obj.speed = this.speed;
         return obj;
     }
 
     get type(){
-         debug(`get type MovementMilestoneVO`)
         return MILESTONE_TYPE_MOVEMENT;
     }
 
@@ -45,5 +44,9 @@ export default class MovementMilestoneVO extends BaseMilestoneVO{
 
     get y(){
         return _y.get(this);
+    }
+
+    get speed(){
+        return 1;
     }
 }

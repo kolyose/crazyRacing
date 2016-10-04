@@ -1,18 +1,13 @@
 "use strict";
 
 import {MILESTONE_TYPE_BLOCKED} from './BaseMilestoneVO';
-import MovementMilestoneVO from './MovementMilestoneVO';
+import BaseMilestoneVO from './BaseMilestoneVO';
 import Debug from './../../debug';
 const debug = new Debug('CR:service:model:BlockedMilestoneVO');
 
-export default class BlockedMilestoneVO extends MovementMilestoneVO{
+export default class BlockedMilestoneVO extends BaseMilestoneVO{
     constructor(){
         super();
-        debug(`MILESTONE_TYPE_BLOCKED created`);
-    }
-
-    setData({x,y}){
-        super.setData({x,y});
     }
 
     getData(){
@@ -21,7 +16,6 @@ export default class BlockedMilestoneVO extends MovementMilestoneVO{
     }
 
     get type(){
-        debug(`get type BlockedMilestoneVO`)
         return MILESTONE_TYPE_BLOCKED;
     }
 }
