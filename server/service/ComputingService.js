@@ -170,7 +170,8 @@ export default function (data){
 
                     // in other case we can move the player forward
                     // if nobody other takes target position
-                    if (!slotsPerRacetrack[racetrackIndex][targetSlotIndex]){
+                    const blockerId = slotsPerRacetrack[racetrackIndex][targetSlotIndex];
+                    if (!blockerId){
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                         slotsPerRacetrack[racetrackIndex][targetSlotIndex] = playerId;
                         milestonesByPlayerId[playerId].push(currentMilestone);
@@ -178,7 +179,7 @@ export default function (data){
                        // debug(`player ${playerId} MOVED: ${racetrackIndex} ${slotIndex} => ${racetrackIndex} ${targetSlotIndex}`);
                     } else {
                         //or just notify player he is blocked
-                        currentMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE_BLOCKED, slotsPerRacetrack[racetrackIndex][targetSlotIndex]);
+                        currentMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE_BLOCKED, racetrackIndex, slotIndex, blockerId);
                        // debug(`player ${playerId} BLOCKED by ${slotsPerRacetrack[racetrackIndex][targetSlotIndex]} from ${racetrackIndex} ${targetSlotIndex}`);
                         milestonesByPlayerId[playerId].push(currentMilestone);
                     }

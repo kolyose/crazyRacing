@@ -1,18 +1,19 @@
 "use strict";
 
 import {MILESTONE_TYPE_BLOCKED} from './BaseMilestoneVO';
-import BaseMilestoneVO from './BaseMilestoneVO';
+import MovementMilestoneVO from './MovementMilestoneVO';
 import Debug from './../../debug';
 const debug = new Debug('CR:service:model:BlockedMilestoneVO');
 
 const _blockerId = new WeakMap();
 
-export default class BlockedMilestoneVO extends BaseMilestoneVO{
+export default class BlockedMilestoneVO extends MovementMilestoneVO{
     constructor(){
         super();
     }
 
-    setData(blockerId){
+    setData(x,y,blockerId){
+        super.setData(x,y);
         this.blockerId = blockerId;
     }
 
