@@ -92,6 +92,8 @@ export default function (data){
                // debug(`playerId: ${playerId}`)
                // debug(`rawMilestones:`,milestonesByPlayerId[playerId])
                 const rawMilestones = milestonesByPlayerId[playerId];
+
+                debug(`PLAYER ${playerId}`)
                 let optimizedMilestones = optimizeMilestones(rawMilestones);
 
                 //extracting data for proper serialization
@@ -188,32 +190,54 @@ export default function (data){
 
             function  optimizeMilestones(rawMilestones){
                 const result = [];
+                let tempMilestonesCollection = [];
                 result.push(rawMilestones[0]);
 
+
                 for (let i=1, length=rawMilestones.length; i<length; i++){
-                    //we need to save recent milestone if it differs from previous one:
-                    //either by type
-                    if (rawMilestones[i].type !== rawMilestones[i-1].type){
-                        result.push(rawMilestones[i]);
-                        continue;
+
+                    debug(`recent milestone: `, rawMilestones[i].getData());
+                    debug(`latest saved milestone: `, result[result.length-1].getData());
+
+                    //looking for collections of consequent milestones which are identical
+                    if (rawMilestones[i].type === result[result.length-1].type //by type
+                        && rawMilestones[i].y === result[result.length-1].y //and by racetrack position
+                            && (rawMilestones[i].x !== result[result.length-1].x //but different by slot position 
+                                || (rawMilestones[i].type === MILESTONE_TYPE_BLOCKED //or by blockerId (for BlockedMilestoneVOs)
+                                    && rawMilestones[i].blockerId !== result[result.length-1].blockerId))){
+
+                            debug(`recent milestone saved to TEMP`);
+
+                            //for both cases we need to get the entire collection
+                            tempMilestonesCollection.push(rawMilestones[i]);
+                            continue;
+                    } 
+
+                    debug(`recent milestone does not meet conditions`);
+
+                    //and as soon as we reach element which doesn't match some of the conditions
+                    //(i.e. it doesn't belong to the collection)
+                    if (tempMilestonesCollection.length){
+
+                        debug(`saving last milestone from TEMP: `, tempMilestonesCollection[tempMilestonesCollection.length-1].getData());
+
+                        //we need to save the last element from the collection
+                        result.push(tempMilestonesCollection[tempMilestonesCollection.length-1]);
+                        tempMilestonesCollection = [];
                     }
-                    //or by racetrack position
-                    if (rawMilestones[i].y !== rawMilestones[i-1].y){
-                        result.push(rawMilestones[i]);
-                        continue;
-                    }
-                    //or if a type of both milestones is BLOCKED but by different players
-                    if (rawMilestones[i].type === MILESTONE_TYPE_BLOCKED
-                        && rawMilestones[i].blockerId !== rawMilestones[i-1].blockerId) {
-                        result.push(rawMilestones[i]);
-                        continue;
-                    }
-                    //or if it's the last milestone and it has a slot position different from previous one
-                    if ((i == length-1) && (rawMilestones[i].x !== rawMilestones[i-1].x)){
-                        result.push(rawMilestones[i]);
-                        continue;
-                    }
+                    
+                    result.push(rawMilestones[i]);                
                 }
+
+                    //after the loop end we need to ensure the tempMilestonesCollection is empty
+                    //and save the last element from the collection if not
+                    if (tempMilestonesCollection.length){
+                        debug(`saving last milestone from temp after LOOP END: `, tempMilestonesCollection[tempMilestonesCollection.length-1].getData());
+
+                        result.push(tempMilestonesCollection[tempMilestonesCollection.length-1]);
+                        tempMilestonesCollection = [];
+                    }
+
                 return result;
             }
 
