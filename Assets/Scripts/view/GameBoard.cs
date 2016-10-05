@@ -185,6 +185,8 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                         break;
                     }                 
             }
+            
+            currentMilestoneVO = null;
             return;
         }
 
