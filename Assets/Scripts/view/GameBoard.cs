@@ -164,6 +164,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                     {
                         Vector3 newPosition = currentMilestoneVO.position;
                         character.transform.position = new Vector3(newPosition.x * camera.unitSize, newPosition.y * camera.unitSize, newPosition.z);
+                        DispatchUserCharacterPosition(character);
                         processMilestonesByCharacter(character);
                         break;
                     }
@@ -171,6 +172,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                 case MilestoneType.MOVE:
                 case MilestoneType.BOOST:
                     {
+                        character.DisplayAnimation(AnimationState.Running, true, currentMilestoneVO.speed);
                         StartCoroutine(MoveCharacter(character, currentMilestoneVO));
                         break;
                     }
@@ -222,14 +224,14 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             //if it is User's character recently moved we need camera to be centered at the character's position
             if (character.PlayerData.id == mainModel.User.id)
             {
-                Vector3 position = character.transform.position;
-                position.x += character.GetComponent<SpriteRenderer>().bounds.size.x / 2;
-                Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, position);
+                DispatchUserCharacterPosition(character);
             }
 
             timePassed = Time.time - startTime;
             yield return null;
         }
+
+        character.DisplayAnimation(AnimationState.Running, false);
 
         //recursive call
         processMilestonesByCharacter(character);
@@ -243,5 +245,12 @@ public class GameBoard : MonoBehaviour, IGameBoard {
 
         //recursive call
         processMilestonesByCharacter(character);
+    }
+
+    private void DispatchUserCharacterPosition(Character character)
+    {
+        Vector3 position = character.transform.position;
+        position.x += character.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+        Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, position);
     }
 }

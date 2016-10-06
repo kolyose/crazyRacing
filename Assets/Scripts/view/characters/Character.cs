@@ -8,6 +8,8 @@ public enum AnimationState
 
 public class Character : MonoBehaviour {
 
+    public const uint DEFAULT_ANIMATION_FRAMERATE = 10;
+
     public Material outlinedMaterial;
 
     public PlayerVO PlayerData {get; private set;}
@@ -44,8 +46,9 @@ public class Character : MonoBehaviour {
         _renderer.material = outlinedMaterial;
     }
 
-    public void DisplayAnimation(AnimationState animationState, bool value)
+    public void DisplayAnimation(AnimationState animationState, bool value, float frameRateFactor=1.0f)
     {
+        _animator.speed = frameRateFactor;
         _animator.SetBool(animationState.ToString(), value);
     }
 }
