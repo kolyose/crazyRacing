@@ -93,7 +93,7 @@ export default function (data){
                // debug(`rawMilestones:`,milestonesByPlayerId[playerId])
                 const rawMilestones = milestonesByPlayerId[playerId];
 
-                debug(`PLAYER ${playerId}`)
+               // debug(`PLAYER ${playerId}`)
                 let optimizedMilestones = optimizeMilestones(rawMilestones);
 
                 //extracting data for proper serialization
@@ -181,9 +181,11 @@ export default function (data){
                        // debug(`player ${playerId} MOVED: ${racetrackIndex} ${slotIndex} => ${racetrackIndex} ${targetSlotIndex}`);
                     } else {
                         //or just notify player he is blocked
-                        currentMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE_BLOCKED, racetrackIndex, slotIndex, blockerId);
+                        currentMilestone = milestonesFactory.getMilestoneByType(MILESTONE_TYPE_BLOCKED, slotIndex, racetrackIndex, blockerId);
                        // debug(`player ${playerId} BLOCKED by ${slotsPerRacetrack[racetrackIndex][targetSlotIndex]} from ${racetrackIndex} ${targetSlotIndex}`);
                         milestonesByPlayerId[playerId].push(currentMilestone);
+                        //if a player is blocked he looses boost
+                        data[playerId].actions.boost = false;
                     }
                 }
             }
@@ -196,8 +198,8 @@ export default function (data){
 
                 for (let i=1, length=rawMilestones.length; i<length; i++){
 
-                    debug(`recent milestone: `, rawMilestones[i].getData());
-                    debug(`latest saved milestone: `, result[result.length-1].getData());
+                    //debug(`recent milestone: `, rawMilestones[i].getData());
+                    //debug(`latest saved milestone: `, result[result.length-1].getData());
 
                     //looking for collections of consequent milestones which are identical
                     if (rawMilestones[i].type === result[result.length-1].type //by type
@@ -206,20 +208,20 @@ export default function (data){
                                 || (rawMilestones[i].type === MILESTONE_TYPE_BLOCKED //or by blockerId (for BlockedMilestoneVOs)
                                     && rawMilestones[i].blockerId !== result[result.length-1].blockerId))){
 
-                            debug(`recent milestone saved to TEMP`);
+                            //debug(`recent milestone saved to TEMP`);
 
                             //for both cases we need to get the entire collection
                             tempMilestonesCollection.push(rawMilestones[i]);
                             continue;
                     } 
 
-                    debug(`recent milestone does not meet conditions`);
+                    //debug(`recent milestone does not meet conditions`);
 
                     //and as soon as we reach element which doesn't match some of the conditions
                     //(i.e. it doesn't belong to the collection)
                     if (tempMilestonesCollection.length){
 
-                        debug(`saving last milestone from TEMP: `, tempMilestonesCollection[tempMilestonesCollection.length-1].getData());
+                        //debug(`saving last milestone from TEMP: `, tempMilestonesCollection[tempMilestonesCollection.length-1].getData());
 
                         //we need to save the last element from the collection
                         result.push(tempMilestonesCollection[tempMilestonesCollection.length-1]);
@@ -232,7 +234,7 @@ export default function (data){
                     //after the loop end we need to ensure the tempMilestonesCollection is empty
                     //and save the last element from the collection if not
                     if (tempMilestonesCollection.length){
-                        debug(`saving last milestone from temp after LOOP END: `, tempMilestonesCollection[tempMilestonesCollection.length-1].getData());
+                        //debug(`saving last milestone from temp after LOOP END: `, tempMilestonesCollection[tempMilestonesCollection.length-1].getData());
 
                         result.push(tempMilestonesCollection[tempMilestonesCollection.length-1]);
                         tempMilestonesCollection = [];
