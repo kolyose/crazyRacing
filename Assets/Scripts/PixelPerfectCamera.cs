@@ -35,14 +35,9 @@ public class PixelPerfectCamera : MonoBehaviour {
         float targetWidth = mainModel.GameSettings.fieldLength * unitSize;
         float targetHeight = Mathf.RoundToInt(targetWidth / (float)Screen.width * Screen.height);
         float targetSize = targetHeight / PixelsPerUnit / 2;
-        Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, (float)(mainModel.GameSettings.fieldWidth * unitSize) / PixelsPerUnit, camera.transform.position.z);
+        Vector3 targetPosition = new Vector3(targetWidth / 2.0f / PixelsPerUnit, targetSize, camera.transform.position.z);
 
         AdjustCamera(targetSize, targetPosition, forced);
-    }
-
-    public void ZoomToFieldWidth()
-    {
-       FollowUserCharacter(Vector3.zero, false);
     }
 
     public void FollowUserCharacter(Vector3 position, bool forced=true)
@@ -68,7 +63,7 @@ public class PixelPerfectCamera : MonoBehaviour {
         else
         {
             StartCoroutine(ZoomCameraSmoothly(targetSize));
-            StartCoroutine(MoveCameraSmoothly(targetPosition));
+            StartCoroutine(MoveCameraSmoothly(targetPosition));           
         }
     }
 
@@ -86,6 +81,10 @@ public class PixelPerfectCamera : MonoBehaviour {
             position.x = mainModel.GameSettings.fieldLength * unitSize - cameraViewWidthHalf;
         }
 
+        if (position.y < camera.orthographicSize)
+        {
+            position.y = camera.orthographicSize;
+        }
         return position;
     }
 

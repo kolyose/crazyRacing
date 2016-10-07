@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour {
 
     public void UpdateCameraPosition(Vector3 position)
     {
-        camera.FollowUserCharacter(position, mainModel.IsNewGame);
+        camera.FollowUserCharacter(position, false);
     }   
 
     public void SelectActions()

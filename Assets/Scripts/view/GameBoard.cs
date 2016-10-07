@@ -240,7 +240,6 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     private IEnumerator HoldCharacter(Character character, MilestoneVO milestoneVO)
     {
         float waitingTime = TIME_TO_PASS_UNIT / mainModel.MovingSpeed;
-        Debug.Log("waitingTime: " + waitingTime);
         yield return new WaitForSeconds(waitingTime);
 
         //recursive call
@@ -250,7 +249,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     private void DispatchUserCharacterPosition(Character character)
     {
         Vector3 position = character.transform.position;
-        position.x += character.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+        position.x += character.GetComponent<SpriteRenderer>().bounds.size.x;
         Messenger<Vector3>.Broadcast(ViewEvent.POSITION_UPDATED, position);
     }
 }
