@@ -125,7 +125,6 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     private void OnCharatersPositionsUpdateComplete()
     {
         Messenger.RemoveListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
-        _gameManager.StopMoving();
 
         if (_gameManager.IsGameEnd())
         {

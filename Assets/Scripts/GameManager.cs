@@ -127,13 +127,7 @@ public class GameManager : MonoBehaviour {
     public void StartMoving()
     {        
         gameBoard.ProcessMilestones();
-        //gameBoard.DisplayCharactersAnimation(AnimationState.Running, true);
     }  
-
-    public void StopMoving()
-    {
-       // gameBoard.DisplayCharactersAnimation(AnimationState.Running, false);
-    }
 
     public void setTimeout(Action callback, float timeout)
     {
@@ -158,6 +152,15 @@ public class GameManager : MonoBehaviour {
         uint userDistance = mainModel.RoundResultsByPlayerId[mainModel.User.id].distance;
         Messenger<uint>.Broadcast(ViewEvent.SET_DISTANCE, userDistance);
         screensManager.ShowScreen(ScreenID.SELECT_ACTIONS);
+
+        setTimeout(SendDefaultActions, mainModel.GameSettings.selectActionsCountdown);
+    }
+
+    private void SendDefaultActions()
+    {
+        screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
+        UserActionsVO defaultUserActions = new UserActionsVO();
+        Messenger<UserActionsVO>.Broadcast(GameEvent.USER_ACTIONS_SELECTED, defaultUserActions);
     }
 
     public void OnActionsSelected()

@@ -1,5 +1,5 @@
 //TODO: reading settings from database
-export const MAX_ROOM_PLAYERS = 1;
+export const MAX_ROOM_PLAYERS = 2;
 export const FIELD_WIDTH = 6;
 export const FIELD_LENGTH = 20;
 export const STEP_SPEED = 1;
@@ -13,4 +13,5 @@ export const ROOM_IS_FULL = "ROOM_IS_FULL";
 export const ROUND_RESULTS = "ROUND_RESULTS";
 
 
-export const START_GAME_TIMEOUT = 0; //in milliseconds
+export const START_GAME_TIMEOUT = 2000; //in milliseconds
+export const SELECT_ACTIONS_COUNTDOWN = 3;  //in seconds

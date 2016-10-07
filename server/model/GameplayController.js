@@ -1,4 +1,4 @@
-import {FIELD_WIDTH, FIELD_LENGTH, PLAYER_ACTIONS, START_GAME, ROUND_RESULTS, START_GAME_TIMEOUT} from './constants';
+import {FIELD_WIDTH, FIELD_LENGTH, PLAYER_ACTIONS, START_GAME, ROUND_RESULTS, START_GAME_TIMEOUT, SELECT_ACTIONS_COUNTDOWN} from './constants';
 import ComputingService from './../service/ComputingService';
 import PlayerActionsVO from './PlayerActionsVO';
 import Util from './../util';
@@ -152,6 +152,12 @@ export default (function(){
             return data;
         }
 
+        _initiateDefaultActionsTimer(){
+             setTimeout(() => {
+               
+            }, SELECT_ACTIONS_COUNTDOWN);
+        }
+
         _getRandomDistanceByPlayerId(playerId){
             const playerPosition = this._getPositionByPlayerId(playerId);
             const randomDistance =  this._calculateRandomDistanceByPosition(playerPosition.y);
@@ -251,7 +257,8 @@ export default (function(){
         _getGameSettings() {
            return {
                fieldWidth  : FIELD_WIDTH,
-               fieldLength : FIELD_LENGTH
+               fieldLength : FIELD_LENGTH,
+               selectActionsCountdown: SELECT_ACTIONS_COUNTDOWN
            };
         }
     }
