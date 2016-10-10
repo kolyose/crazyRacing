@@ -1,4 +1,4 @@
-﻿using UnityEngine.UI;
+using UnityEngine.UI;
 
 public class SelectActionsScreenMediator : BaseScreenMediator
 {
@@ -6,6 +6,7 @@ public class SelectActionsScreenMediator : BaseScreenMediator
     private Button _btnSelect;
     private ToggleGroup _tgDirection;
     private Text _tfDistance;
+    private Text _tfTimer;
 
     private UserActionsVO _userActionsVO;
 
@@ -17,11 +18,13 @@ public class SelectActionsScreenMediator : BaseScreenMediator
         _btnSelect = transform.Find("Select").GetComponent<Button>();
         _tgDirection = transform.Find("Direction").GetComponent<ToggleGroup>();
         _tfDistance = transform.Find("Distance").GetComponent<Text>();
+        _tfTimer = transform.Find("Timer").GetComponent<Text>();
 
         _userActionsVO = new UserActionsVO();
 
         Messenger<uint>.AddListener(ViewEvent.SET_DISTANCE, OnSetDistance);
         Messenger<bool>.AddListener(ViewEvent.UPDATE_BOOST_AVAILABILITY, OnUpdateBoostAvailability);
+        Messenger<uint>.AddListener(ModelEvent.TIMER_TICK, OnTimerTick);
     }
 
     public void OnBoostClick()
@@ -61,11 +64,17 @@ public class SelectActionsScreenMediator : BaseScreenMediator
         _toggleBoost.isOn = false;
         _userActionsVO.direction = 0;
         _tgDirection.SetAllTogglesOff();
+        OnTimerTick(10);
     }
 
     protected void OnUpdateBoostAvailability(bool value)
     {
         _toggleBoost.interactable = value;
+    }
+
+    protected void OnTimerTick(uint data)
+    {
+        _tfTimer.text = "Time left " + Util.getSecondsString(data);
     }
 
 }

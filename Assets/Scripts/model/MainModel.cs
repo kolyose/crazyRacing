@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using System.Collections;
 
 public class MainModel : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class MainModel : MonoBehaviour
     public PlayerVO User {get; set; }
     public PlayerVO[] RoundPlayers {get; private set;}
     public Dictionary<string, RoundResultVO> RoundResultsByPlayerId { get; set; }
+    private IEnumerator _timerCoroutine;
 
     public MainModel()
     {
@@ -90,5 +92,29 @@ public class MainModel : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void setTimer(uint timeout)
+    {
+        _timerCoroutine = WaitForSecondsCoroutine(timeout);
+        StartCoroutine(_timerCoroutine);
+    }
+
+    public void resetTimer()
+    {
+        StopCoroutine(_timerCoroutine);
+        _timerCoroutine = null;
+    }
+
+    private IEnumerator WaitForSecondsCoroutine(uint timeout)
+    {
+        while(timeout > 0)
+        {
+            yield return new WaitForSeconds(1);            
+            timeout -= 1;
+            Messenger<uint>.Broadcast(ModelEvent.TIMER_TICK, timeout);
+        }
+
+        Messenger.Broadcast(ModelEvent.TIMER_COMPLETE);
     }
 }

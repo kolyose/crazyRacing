@@ -129,17 +129,7 @@ public class GameManager : MonoBehaviour {
         gameBoard.ProcessMilestones();
     }  
 
-    public void setTimeout(Action callback, float timeout)
-    {
-        StartCoroutine(WaitForSecondsCoroutine(callback, timeout));
-    }
-
-    private IEnumerator WaitForSecondsCoroutine(Action callback, float timeout)
-    {
-        yield return new WaitForSeconds(timeout);
-        callback();
-        yield break;
-    }
+   
 
     public void UpdateCameraPosition(Vector3 position)
     {
@@ -153,11 +143,13 @@ public class GameManager : MonoBehaviour {
         Messenger<uint>.Broadcast(ViewEvent.SET_DISTANCE, userDistance);
         screensManager.ShowScreen(ScreenID.SELECT_ACTIONS);
 
-        setTimeout(SendDefaultActions, mainModel.GameSettings.selectActionsCountdown);
+        Messenger.AddListener(ModelEvent.TIMER_COMPLETE, SendDefaultActions);
+        mainModel.setTimer(mainModel.GameSettings.selectActionsCountdown);
     }
 
     private void SendDefaultActions()
     {
+        Messenger.RemoveListener(ModelEvent.TIMER_COMPLETE, SendDefaultActions);
         screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
         UserActionsVO defaultUserActions = new UserActionsVO();
         Messenger<UserActionsVO>.Broadcast(GameEvent.USER_ACTIONS_SELECTED, defaultUserActions);
@@ -165,6 +157,7 @@ public class GameManager : MonoBehaviour {
 
     public void OnActionsSelected()
     {
+        mainModel.resetTimer();
         screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
     }   
 

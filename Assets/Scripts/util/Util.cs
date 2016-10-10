@@ -27,4 +27,15 @@ public class Util : MonoBehaviour
     {
         public T[] array;
     }
+
+    public static string getSecondsString(uint seconds)
+    {
+        string strMinutes = Mathf.Floor(seconds/60).ToString();
+        strMinutes = (strMinutes.Length == 1) ? "0" + strMinutes : strMinutes;
+
+        string strSeconds = seconds.ToString();
+        strSeconds = (strSeconds.Length == 1) ? "0" + strSeconds : strSeconds;
+
+        return strMinutes + ":" + strSeconds;
+    }
 }
