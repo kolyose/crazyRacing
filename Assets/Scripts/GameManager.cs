@@ -123,13 +123,21 @@ public class GameManager : MonoBehaviour {
         gameBoard.InitTiles();
         gameBoard.InitCharacters();
     }
+
+    public void PlayBackgroundSound()
+    {
+        SoundManager.instance.PlayBackground();
+    }
+
+    public void StopBackgroundSound()
+    {
+        SoundManager.instance.StopSound();
+    }
    
     public void StartMoving()
     {        
         gameBoard.ProcessMilestones();
-    }  
-
-   
+    }         
 
     public void UpdateCameraPosition(Vector3 position)
     {
@@ -143,6 +151,7 @@ public class GameManager : MonoBehaviour {
         Messenger<uint>.Broadcast(ViewEvent.SET_DISTANCE, userDistance);
         screensManager.ShowScreen(ScreenID.SELECT_ACTIONS);
 
+        SoundManager.instance.PlayBackground();
         Messenger.AddListener(ModelEvent.TIMER_COMPLETE, SendDefaultActions);
         mainModel.setTimer(mainModel.GameSettings.selectActionsCountdown);
     }
@@ -158,6 +167,7 @@ public class GameManager : MonoBehaviour {
     public void OnActionsSelected()
     {
         mainModel.resetTimer();
+        SoundManager.instance.StopSound();
         screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
     }   
 

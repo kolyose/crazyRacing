@@ -34,7 +34,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
 
         _gameManager.SaveUserData(playerVO);
         _gameManager.ShowSelectCharactersScreen();
-
+        _gameManager.PlayBackgroundSound();
 
         //TODO: add functionality for characters selection
         //TODO: add functionality for private rooms creation
@@ -81,6 +81,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         Messenger<Vector3>.AddListener(ViewEvent.POSITION_UPDATED, OnUserPositionUpdated);
 
         _gameManager.StartGame(gameSettings);
+        _gameManager.StopBackgroundSound();
     }
     
     /*

@@ -113,15 +113,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                 character.DisplayOutline();
             }
         }
-    }
-    
-    public void DisplayCharactersAnimation(AnimationState animationState, bool value)
-    {
-        foreach (Character character in _characters)
-        {
-            character.DisplayAnimation(animationState, value);
-        }
-    }
+    }    
 
     public Vector3 GetUserCharacterPosition()
     {
@@ -172,7 +164,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                 case MilestoneType.MOVE:
                 case MilestoneType.BOOST:
                     {
-                        character.DisplayAnimation(AnimationState.Running, true, currentMilestoneVO.speed);
+                        character.Run(currentMilestoneVO.speed);
                         StartCoroutine(MoveCharacter(character, currentMilestoneVO));
                         break;
                     }
@@ -231,7 +223,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             yield return null;
         }
 
-        character.DisplayAnimation(AnimationState.Running, false);
+        character.Stop();
 
         //recursive call
         processMilestonesByCharacter(character);

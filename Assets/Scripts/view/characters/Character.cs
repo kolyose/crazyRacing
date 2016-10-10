@@ -32,7 +32,7 @@ public class Character : MonoBehaviour {
         _animator = GetComponent<Animator>();
         _defaultMaterial = _renderer.material;
         Size = _renderer.bounds.size;
-        DisplayAnimation(AnimationState.Running, false);
+        Stop();
     }
 
 	public void SetData(PlayerVO data)
@@ -46,9 +46,16 @@ public class Character : MonoBehaviour {
         _renderer.material = outlinedMaterial;
     }
 
-    public void DisplayAnimation(AnimationState animationState, bool value, float frameRateFactor=1.0f)
+    public void Run(float frameRateFactor=1.0f)
     {
         _animator.speed = frameRateFactor;
-        _animator.SetBool(animationState.ToString(), value);
+        _animator.SetBool(AnimationState.Running.ToString(), true);
+        SoundManager.instance.PlayRunning();
+    }
+
+    public void Stop()
+    {
+        SoundManager.instance.StopSound();
+        _animator.SetBool(AnimationState.Running.ToString(), false);
     }
 }
