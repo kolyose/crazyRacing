@@ -22,9 +22,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
     private Character[] _characters;
     //private float CELL_SIZE;
     private uint _characterMilestonesProcessedCounter;
-    private Transform _charactersContainer;
-    private Transform _tilesContainer;
-    private Transform _backgroundContainer;
+    private GameObject _charactersContainerGO;
+    private GameObject _tilesContainerGO;
+    private GameObject _backgroundContainerGO;
 
     void Awake() 
     {
@@ -32,9 +32,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         if (camera == null) camera = GetComponent<PixelPerfectCamera>();
         if (charactersFactory == null) charactersFactory = GetComponent<ICharactersFactory>();
 
-        _charactersContainer = viewContainer.transform.FindChild("Characters").transform;
-        _tilesContainer = viewContainer.transform.FindChild("Tiles").transform;
-        _backgroundContainer = viewContainer.transform.FindChild("Background").transform;
+        _charactersContainerGO = viewContainer.transform.FindChild("Characters").gameObject;
+        _tilesContainerGO = viewContainer.transform.FindChild("Tiles").gameObject;
+        _backgroundContainerGO = viewContainer.transform.FindChild("Background").gameObject;        
     }
 
     public void InitTiles()
@@ -52,14 +52,14 @@ public class GameBoard : MonoBehaviour, IGameBoard {
                 positionY = camera.unitSize * i;
 
                 GameObject grassTileInstance = Instantiate(grassTile, new Vector3(positionX, positionY, 0.0f), Quaternion.identity) as GameObject;
-                grassTileInstance.transform.SetParent(_tilesContainer);
+                grassTileInstance.transform.SetParent(_tilesContainerGO.transform);
                 grassTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
             }
         }
 
         positionY = camera.unitSize * mainModel.GameSettings.fieldWidth - camera.unitSize/4;
         GameObject finishTileInstance = Instantiate(finishTile, new Vector3(positionX, positionY, 0.0f), Quaternion.identity) as GameObject;
-        finishTileInstance.transform.SetParent(_tilesContainer);
+        finishTileInstance.transform.SetParent(_tilesContainerGO.transform);
     }
 
   	public void InitBackground() 
@@ -73,7 +73,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             while (true)
             {
                 GameObject tribunesTileInstance = Instantiate(tribunesTile, new Vector3(positionX, positionY, 0), Quaternion.identity) as GameObject;
-                tribunesTileInstance.transform.SetParent(_backgroundContainer);
+                tribunesTileInstance.transform.SetParent(_backgroundContainerGO.transform);
                 tribunesTileInstance.transform.localScale = new Vector3(camera.Scale, camera.Scale, 1);
                 positionX += tribunesTile.GetComponent<SpriteRenderer>().bounds.size.x;
 
@@ -90,10 +90,12 @@ public class GameBoard : MonoBehaviour, IGameBoard {
             }
             else
             {
-                _backgroundContainer.position = new Vector3(_backgroundContainer.localPosition.x, mainModel.GameSettings.fieldWidth * camera.unitSize, _backgroundContainer.localPosition.z);
+                _backgroundContainerGO.transform.position = new Vector3(_backgroundContainerGO.transform.localPosition.x, mainModel.GameSettings.fieldWidth * camera.unitSize, _backgroundContainerGO.transform.localPosition.z);
                 break;  
             }
-        }       
+        }
+
+        _backgroundContainerGO.SetActive(true);
 	}
 
     public void InitCharacters()
@@ -104,7 +106,7 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         for (int i = 0; i < length; i++)
         {
             Character character = charactersFactory.GetCharacter(mainModel.RoundPlayers[i]);
-            character.transform.SetParent(_charactersContainer);
+            character.transform.SetParent(_charactersContainerGO.transform);
             character.transform.position = new Vector3(-camera.unitSize, -camera.unitSize, 0);
             _characters[i] = character;
 

@@ -50,12 +50,12 @@ public class Character : MonoBehaviour {
     {
         _animator.speed = frameRateFactor;
         _animator.SetBool(AnimationState.Running.ToString(), true);
-        SoundManager.instance.PlayRunning();
+        //SoundManager.instance.PlayRunning();
     }
 
     public void Stop()
     {
-        SoundManager.instance.StopSound();
+       // SoundManager.instance.StopSound();
         _animator.SetBool(AnimationState.Running.ToString(), false);
     }
 }

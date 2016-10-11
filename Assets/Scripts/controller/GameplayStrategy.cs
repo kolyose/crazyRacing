@@ -93,6 +93,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         _gameManager.ProcessRoundResults(results);
 
         Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
+        SoundManager.instance.PlayRunning();
         _gameManager.StartMoving();
     }
 
@@ -126,6 +127,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
     private void OnCharatersPositionsUpdateComplete()
     {
         Messenger.RemoveListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
+        SoundManager.instance.StopSound();
 
         if (_gameManager.IsGameEnd())
         {

@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour {
         Messenger<uint>.Broadcast(ViewEvent.SET_DISTANCE, userDistance);
         screensManager.ShowScreen(ScreenID.SELECT_ACTIONS);
 
-        SoundManager.instance.PlayBackground();
+        SoundManager.instance.PlayCountdown();
         Messenger.AddListener(ModelEvent.TIMER_COMPLETE, SendDefaultActions);
         mainModel.setTimer(mainModel.GameSettings.selectActionsCountdown);
     }
