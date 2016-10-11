@@ -54,7 +54,11 @@ export default function (data){
 
                         //In other case shift a player if he requested & allowed to shifting
                         //or move him 1 step forward
-                        shiftOrMovePlayer(playerId, racetrackIndex, slotIndex);
+                        if (shiftOrMovePlayer(playerId, racetrackIndex, slotIndex)){
+                            // if there was shifting or moving done
+                            // we need to update the player's remaining distance
+                            data[playerId].distance = (data[playerId].distance - 1);
+                        }
                         processedPlayers.push(playerId);
                     }
                 }
@@ -167,7 +171,7 @@ export default function (data){
                         slotsPerRacetrack[racetrackIndex][slotIndex] = null;
                         milestonesByPlayerId[playerId].push(currentMilestone);
 
-                        return;
+                        return true;
                     }
 
                     // in other case we can move the player forward
@@ -186,8 +190,12 @@ export default function (data){
                         milestonesByPlayerId[playerId].push(currentMilestone);
                         //if a player is blocked he looses boost
                         data[playerId].actions.boost = false;
+
+                        return false;
                     }
                 }
+
+                return true;
             }
 
             function  optimizeMilestones(rawMilestones){
