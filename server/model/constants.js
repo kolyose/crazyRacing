@@ -14,4 +14,4 @@ export const ROUND_RESULTS = "ROUND_RESULTS";
 
 
 export const START_GAME_TIMEOUT = 2000; //in milliseconds
-export const SELECT_ACTIONS_COUNTDOWN = 12;  //in seconds
+export const SELECT_ACTIONS_COUNTDOWN = 11;  //in seconds

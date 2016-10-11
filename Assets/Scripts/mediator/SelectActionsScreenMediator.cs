@@ -14,11 +14,11 @@ public class SelectActionsScreenMediator : BaseScreenMediator
     {
         base.Awake();
 
-        _toggleBoost = transform.Find("Boost").GetComponent<Toggle>();
-        _btnSelect = transform.Find("Select").GetComponent<Button>();
-        _tgDirection = transform.Find("Direction").GetComponent<ToggleGroup>();
-        _tfDistance = transform.Find("Distance").GetComponent<Text>();
-        _tfTimer = transform.Find("Timer").GetComponent<Text>();
+        _toggleBoost = transform.FindChild("Controls").FindChild("Boost").GetComponent<Toggle>();
+        _btnSelect = transform.FindChild("Controls").FindChild("Select").GetComponent<Button>();
+        _tgDirection = transform.FindChild("Controls").FindChild("Direction").GetComponent<ToggleGroup>();
+        _tfDistance = transform.FindChild("Controls").FindChild("Distance").GetComponent<Text>();
+        _tfTimer = transform.FindChild("Controls").FindChild("Timer").GetComponent<Text>();
 
         _userActionsVO = new UserActionsVO();
 

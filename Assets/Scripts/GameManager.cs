@@ -157,8 +157,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private void SendDefaultActions()
-    {
-        Messenger.RemoveListener(ModelEvent.TIMER_COMPLETE, SendDefaultActions);
+    {        
         screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
         UserActionsVO defaultUserActions = new UserActionsVO();
         Messenger<UserActionsVO>.Broadcast(GameEvent.USER_ACTIONS_SELECTED, defaultUserActions);
@@ -166,6 +165,7 @@ public class GameManager : MonoBehaviour {
 
     public void OnActionsSelected()
     {
+        Messenger.RemoveListener(ModelEvent.TIMER_COMPLETE, SendDefaultActions);
         mainModel.resetTimer();
         SoundManager.instance.StopSound();
         screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
