@@ -132,6 +132,7 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         if (_gameManager.IsGameEnd())
         {
             _gameManager.ShowGameResults();
+            SoundManager.instance.PlayFinish();
             Messenger<Vector3>.RemoveListener(ViewEvent.POSITION_UPDATED, OnUserPositionUpdated);
             return;
         }

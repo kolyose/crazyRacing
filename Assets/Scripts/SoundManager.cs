@@ -9,6 +9,7 @@ public class SoundManager : MonoBehaviour {
     public AudioClip backgroundClip;
     public AudioClip countdownClip;
     public AudioClip runningClip;
+    public AudioClip finishClip;
 
 	// Use this for initialization
 	void Awake () 
@@ -29,17 +30,26 @@ public class SoundManager : MonoBehaviour {
 
     public void PlayBackground()
     {
+        _audioSource.loop = true;
         PlaySound(backgroundClip);
     }
 
     public void PlayCountdown()
     {
+        _audioSource.loop = false;
         PlaySound(countdownClip);
     }
 
     public void PlayRunning()
     {
+        _audioSource.loop = true;
         PlaySound(runningClip);
+    }
+
+    public void PlayFinish()
+    {
+        _audioSource.loop = false;
+        PlaySound(finishClip);
     }
 
     public void StopSound()

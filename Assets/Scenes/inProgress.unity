@@ -889,6 +889,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 114000011052109572, guid: 4905a6aad04435a44a23562fd426a11d,
+        type: 2}
+      propertyPath: finishClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 2723b72f08fe9584694a4bed967d7dcf, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4905a6aad04435a44a23562fd426a11d, type: 2}
   m_IsPrefabParent: 0

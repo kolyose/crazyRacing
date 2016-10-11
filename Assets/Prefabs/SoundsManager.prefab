@@ -130,3 +130,4 @@ MonoBehaviour:
   backgroundClip: {fileID: 8300000, guid: 87ff2446471e4254fa53dd508cbe9c06, type: 3}
   countdownClip: {fileID: 8300000, guid: d56e3c6e76404c84382a5786cea7009f, type: 3}
   runningClip: {fileID: 8300000, guid: 955b57daec7eae64a92ee07eb03dbb50, type: 3}
+  finishClip: {fileID: 8300000, guid: 2723b72f08fe9584694a4bed967d7dcf, type: 3}
