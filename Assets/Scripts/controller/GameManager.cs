@@ -19,13 +19,28 @@ public class GameManager : MonoBehaviour {
     public IGameplayStrategy    gameplay;
     public IInput               inputController;
     public IScreensManager      screensManager;
+    public IGameStatesFactory   gameStatesFactory;
+
+    private IGameState _state;
 
  	void Start () 
     {
         InitializeComponents();
         InitializeUI();
 
-        gameplay.Play();
+        //gameplay.Play();
+        ApplyState(gameStatesFactory.GetStateInitial(this));
+    }
+
+    public void ApplyState(IGameState newState)
+    {
+        if (_state != null)
+        {
+            _state.Exit();
+        }
+
+        _state = newState;
+        _state.Entry();
     }
 
     private void InitializeComponents()
