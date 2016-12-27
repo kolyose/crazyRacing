@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour {
  	void Start () 
     {
         InitializeComponents();
-        InitializeUI();
+       // InitializeUI();
 
         //gameplay.Play();
         ApplyState(gameStatesFactory.GetStateInitial(this));
@@ -52,8 +52,9 @@ public class GameManager : MonoBehaviour {
         if (gameplay == null)           gameplay =          GetComponent<IGameplayStrategy>();
         if (inputController == null)    inputController =   GetComponent<IInput>();
         if (screensManager == null)     screensManager =    GetComponent<IScreensManager>();
+        if (gameStatesFactory == null) gameStatesFactory =  GetComponent<IGameStatesFactory>();
 
-        gameplay.SetGameManager(this);
+        //gameplay.SetGameManager(this);
     }
 
     public void InitializeUI()
@@ -61,7 +62,7 @@ public class GameManager : MonoBehaviour {
         screensManager.InitScreens();
     }
 
-    public void GetLoginData()
+    public void ShowLoginScreen()
     {
         screensManager.ShowScreen(ScreenID.LOGIN);
     }

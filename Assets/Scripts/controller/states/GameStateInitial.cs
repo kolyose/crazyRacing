@@ -8,8 +8,7 @@
     public override void Entry()
     {
         base.Entry();
-        //_manager.DoThis();
-        //_manager.DoThatTHing();
-        //_manager.AndSoOn()...
+        _manager.InitializeUI();
+        _manager.ApplyState(_factory.GetStateLoginInput(_manager));
     }
 }

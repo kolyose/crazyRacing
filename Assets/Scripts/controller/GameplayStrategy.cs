@@ -11,10 +11,11 @@ public class GameplayStrategy : MonoBehaviour, IGameplayStrategy {
         _gameManager = gm;
     }
 
+    //TODO: deside where should listeners be handled - within GameManager or within its states?
     public void Play()
     {
         Messenger<string, string>.AddListener(ModelEvent.DATA_READY, OnLoginDataReady);
-        _gameManager.GetLoginData();
+        _gameManager.ShowLoginScreen();
     }
 
     public void OnLoginDataReady(string name, string password)
