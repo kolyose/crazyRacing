@@ -35,7 +35,7 @@ public class EventSystem : MonoBehaviour
         }
         else
         {
-            evt = new BaseEvent(eventType, data);
+            evt = new BaseEvent(eventType, data); //TODO: use factory here! like "factory.getEventByType(eventType, data)"
         }
         
         Messenger<IEvent>.Broadcast<IEvent>(eventType, evt, callback);
