@@ -1,4 +1,7 @@
-﻿public abstract class BaseGameState : IGameState
+﻿using System;
+using UnityEngine;
+
+public abstract class BaseGameState : IGameState
 {
     protected GameManager _manager;
     protected IGameStatesFactory _factory;
@@ -17,5 +20,5 @@
     public virtual void Exit()
     {
 
-    }
+    }    
 }

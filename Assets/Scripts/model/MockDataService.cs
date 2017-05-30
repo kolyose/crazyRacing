@@ -1,5 +1,6 @@
 using UnityEngine;
 using SocketIO;
+using System;
 
 public class MockDataService : MonoBehaviour, IDataService
 {
@@ -64,5 +65,10 @@ public class MockDataService : MonoBehaviour, IDataService
     private string getRoundDataFromJson(uint roundNumber)
     {
        return Resources.Load<TextAsset>("Round_" + roundNumber).text;
+    }
+
+    public void Login(SessionDataVO loginData)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -13,7 +13,7 @@ public class DataService : MonoBehaviour, IDataService
         if (dataParser == null) dataParser = GetComponent<IServerDataParser>();
     }
 
-    public void Login(string name, string password)
+    public void Login(SessionDataVO sessionData)
     {
         //socket.Connect();
 
@@ -21,8 +21,8 @@ public class DataService : MonoBehaviour, IDataService
         //if login successful - we get player's raw data
         //otherwise we get null data (error object)
         PlayerVO playerVO = new PlayerVO();
-        playerVO.id = name;
-        playerVO.name = name;
+        playerVO.id = sessionData.Login;
+        playerVO.name = sessionData.Login;
             
         Messenger<PlayerVO>.Broadcast(ServerCommand.LOGIN, playerVO);
     }
@@ -48,7 +48,7 @@ public class DataService : MonoBehaviour, IDataService
         };
 
         socket.On(ServerCommand.ADD_PLAYERS, OnAddPlayers);
-        socket.On(ServerCommand.START_GAME, OnStartGame);
+        socket.On(ServerCommand.START_MATCH, OnStartGame);
         socket.On(ServerCommand.ROUND_RESULTS, OnRoundResults);
         string json = JsonUtility.ToJson(commandVO);
         socket.Emit(ServerCommands.JOIN_ROOM, new JSONObject(json));
@@ -68,7 +68,7 @@ public class DataService : MonoBehaviour, IDataService
         Debug.Log("START_GAME: " + rawData);
         SettingsVO settings = dataParser.GetSettingsData(rawData);
         settings.fieldLength += 1; //enlarging field for finish line
-        Messenger<SettingsVO>.Broadcast(ServerCommand.START_GAME, settings);
+        Messenger<SettingsVO>.Broadcast(ServerCommand.START_MATCH, settings);
     }
 
     private void OnRoundResults(SocketIOEvent evt)

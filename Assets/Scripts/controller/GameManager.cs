@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour {
 
     public IGameBoard           gameBoard;
     public IDataService         dataService;
-    public IGameplayStrategy    gameplay;
     public IInput               inputController;
     public IScreensManager      screensManager;
     public IGameStatesFactory   gameStatesFactory;
@@ -26,9 +25,6 @@ public class GameManager : MonoBehaviour {
  	void Start () 
     {
         InitializeComponents();
-       // InitializeUI();
-
-        //gameplay.Play();
         ApplyState(gameStatesFactory.GetStateInitial(this));
     }
 
@@ -49,12 +45,9 @@ public class GameManager : MonoBehaviour {
         if (camera == null)             camera =            GetComponent<PixelPerfectCamera>();
         if (gameBoard == null)          gameBoard =         GetComponent<IGameBoard>();
         if (dataService == null)        dataService =       GetComponent<IDataService>();
-        if (gameplay == null)           gameplay =          GetComponent<IGameplayStrategy>();
         if (inputController == null)    inputController =   GetComponent<IInput>();
         if (screensManager == null)     screensManager =    GetComponent<IScreensManager>();
-        if (gameStatesFactory == null) gameStatesFactory =  GetComponent<IGameStatesFactory>();
-
-        //gameplay.SetGameManager(this);
+        if (gameStatesFactory == null) gameStatesFactory =  GetComponent<IGameStatesFactory>();        
     }
 
     public void InitializeUI()
@@ -62,19 +55,35 @@ public class GameManager : MonoBehaviour {
         screensManager.InitScreens();
     }
 
-    public void ShowLoginScreen()
+    public void ShowScreen(ScreenID screenID)
     {
-        screensManager.ShowScreen(ScreenID.LOGIN);
+        screensManager.ShowScreen(screenID);
     }
 
-    public void OnLoginDataReady()
+    public void HideScreen(ScreenID screenID)
     {
-        screensManager.HideScreen(ScreenID.LOGIN);
-    }    
+        screensManager.HideScreen(screenID);
+    }
 
-    public void Login(string login, string password)
+    public void ResetScreen(ScreenID screenID)
     {
-        dataService.Login(login, password);
+        screensManager.ResetScreen(screenID);
+    }
+
+    public void SendLoginDataToServer(SessionDataVO loginData)
+    {
+        dataService.Login(loginData);
+    }
+
+    public void SetLoginData(string login, string password)
+    {
+        SessionDataVO newSession = new SessionDataVO(login, password);
+        mainModel.SessionData = newSession;
+    }
+
+    public SessionDataVO GetLoginData()
+    {
+        return mainModel.SessionData;
     }
 
     public void SaveUserData(PlayerVO playerVO)
@@ -82,39 +91,14 @@ public class GameManager : MonoBehaviour {
         mainModel.User = playerVO;
     }
 
-    public void OnAddPlayersCommand(PlayerVO[] players)
+    public void AddPlayersToModel(PlayerVO[] players)
     {
         mainModel.AddPlayers(players);
     }
 
-    public void OnRemovePlayersCommand(PlayerVO[] players)
+    public void RemovePlayersFromModel(PlayerVO[] players)
     {
         mainModel.RemovePlayers(players);
-    }
-
-    public void OnStartGameCommand(RoundResultVO[] results)
-    {
-
-    }
-
-    public void ShowSelectCharactersScreen()
-    {
-        screensManager.ShowScreen(ScreenID.SELECT_CHARACTERS);
-    }
-
-    public void HideSelectCharactersScreen()
-    {
-        screensManager.HideScreen(ScreenID.SELECT_CHARACTERS);
-    }
-
-    public void ShowWaitingScreen()
-    {
-        screensManager.ShowScreen(ScreenID.WAITING_FOR_PLAYERS);
-    }
-
-    public void HideWaitingScreen()
-    {
-        screensManager.HideScreen(ScreenID.WAITING_FOR_PLAYERS);
     }
 
     public void SaveCharacterId(uint characterId)
@@ -127,31 +111,52 @@ public class GameManager : MonoBehaviour {
         dataService.JoinRoom(roomID, mainModel.User);
     }
 
-    public void StartGame(SettingsVO gameSettings)
+    public void SetGameSettings(SettingsVO settings)
     {
-        mainModel.ResetGameData();
-        mainModel.GameSettings = gameSettings;
+        mainModel.GameSettings = settings;
+    }
 
+    public void SaveRoundResults(RoundResultVO[] results)
+    {
+        mainModel.SaveRoundResults(results);
+    }
+
+    public void PrepareModel()
+    {
+        mainModel.ResetMatchData();
+    }
+
+    public void PrepareCamera()
+    {
         camera.UpdateSettings();
-        camera.ZoomToFieldLength();
+        ZoomToFieldLength();
+    }
 
+    public void PrepareGameboard()
+    {
         gameBoard.InitBackground();
         gameBoard.InitTiles();
         gameBoard.InitCharacters();
     }
-   
+
+    public void ProcessMilestones()
+    {
+        gameBoard.ProcessMilestones();
+    }
+
+    public void ZoomToFieldWidth()
+    {
+        camera.ZoomToFieldWidth();
+    }
+
+    public void ZoomToFieldLength()
+    {
+        camera.ZoomToFieldLength();
+    }
+
     public void StartMoving()
     {
-        //!!! mainModel.IsNewGame getter acts like trigger, so we must to call it once. In other case the second call will return a result opposite to the first call's one
-        gameBoard.ProcessMilestones();
-        if (mainModel.IsNewGame)
-        {            
-            setTimeout(camera.ZoomToFieldWidth, 2);
-        }
-        else
-        {           
-            gameBoard.DisplayCharactersAnimation(AnimationState.Running, true);
-        }      
+        gameBoard.DisplayCharactersAnimation(AnimationState.Running, true);
     }  
 
     public void StopMoving()
@@ -159,57 +164,35 @@ public class GameManager : MonoBehaviour {
         gameBoard.DisplayCharactersAnimation(AnimationState.Running, false);
     }
 
-    public void setTimeout(Action callback, float timeout)
-    {
-        StartCoroutine(WaitForSecondsCoroutine(callback, timeout));
-    }
-
-    private IEnumerator WaitForSecondsCoroutine(Action callback, float timeout)
-    {
-        yield return new WaitForSeconds(timeout);
-        callback();
-        yield break;
-    }
-
     public void UpdateCameraPosition(Vector3 position)
     {
-        camera.FollowUserCharacter(position, mainModel.IsNewGame);
+        camera.FollowUserCharacter(position, mainModel.IsNewMatch);
     }   
-
-    public void SelectActions()
+    
+    public void UpdateUserDistance()
     {
-        screensManager.ResetScreen(ScreenID.SELECT_ACTIONS);
         uint userDistance = mainModel.RoundResultsByPlayerId[mainModel.User.id].distance;
         Messenger<uint>.Broadcast(ViewEvent.SET_DISTANCE, userDistance);
-        screensManager.ShowScreen(ScreenID.SELECT_ACTIONS);
+    }
+    
+    public void UpdateBoostAvailability()
+    {
+        Messenger<bool>.Broadcast(ViewEvent.UPDATE_BOOST_AVAILABILITY, mainModel.IsBoostAllowed());
     }
 
-    public void OnActionsSelected()
+    public void UpdateMatchResults()
     {
-        screensManager.HideScreen(ScreenID.SELECT_ACTIONS);
-    }   
+        SortedDictionary<uint, string> playersByPlace = mainModel.GetPlayersByPlace();
+        Messenger<SortedDictionary<uint, string>>.Broadcast(ViewEvent.SET_GAME_RESULTS, playersByPlace);
+    }
 
     public void SendSelectedActions(UserActionsVO actions)
     {       
         dataService.SendUserActions(actions);
     }
-
-    public void ShowGameResults()
+        
+    public bool IsMatchEnd()
     {
-        screensManager.ResetScreen(ScreenID.GAME_RESULTS);
-        SortedDictionary<uint, string> playersByPlace = mainModel.GetPlayersByPlace();
-        Messenger<SortedDictionary<uint, string>>.Broadcast(ViewEvent.SET_GAME_RESULTS, playersByPlace);
-        screensManager.ShowScreen(ScreenID.GAME_RESULTS);
-    }
-
-    public void ProcessRoundResults(RoundResultVO[] results)
-    {
-        mainModel.SaveRoundResults(results);
-        Messenger<bool>.Broadcast(ViewEvent.UPDATE_BOOST_AVAILABILITY, mainModel.IsBoostAllowed());
-    }
-
-    public bool IsGameEnd()
-    {
-        return mainModel.IsGameEnd();
+        return mainModel.IsMatchEnd();
     }
 }

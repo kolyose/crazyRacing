@@ -12,6 +12,18 @@ public class Util : MonoBehaviour
         Instance = this;
     }
 
+    public void SetTimeout(Action callback, float timeout)
+    {
+        StartCoroutine(WaitForSecondsCoroutine(callback, timeout));
+    }
+
+    private IEnumerator WaitForSecondsCoroutine(Action callback, float timeout)
+    {
+        yield return new WaitForSeconds(timeout);
+        callback();
+        yield break;
+    }
+
     /*
      * Function provides a wrapper around top-level JSON arrays - just as workaround for JsonUtility's issue, because of which it can't to parse such array
      */

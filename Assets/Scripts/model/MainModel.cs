@@ -6,23 +6,25 @@ using System;
 public class MainModel : MonoBehaviour
 {
     public float MovingSpeed = 1.0f;
-    private bool _isNewGame;
-    public bool IsNewGame {
+    private bool _isNewMatch;
+    public bool IsNewMatch {
         get
         {
-            bool result = _isNewGame;
-            _isNewGame = false;
+            bool result = _isNewMatch;
+            _isNewMatch = false;
             return result;
         }
         set
         {
-            _isNewGame = value;
+            _isNewMatch = value;
         }
     }
     public SettingsVO GameSettings { get; set;}
     public PlayerVO User {get; set; }
     public PlayerVO[] RoundPlayers {get; private set;}
     public Dictionary<string, RoundResultVO> RoundResultsByPlayerId { get; set; }
+
+    public SessionDataVO SessionData { get; set; }
 
     public MainModel()
     {
@@ -39,9 +41,9 @@ public class MainModel : MonoBehaviour
        //TODO: add functionality
     }
 
-    public void ResetGameData()
+    public void ResetMatchData()
     {
-        IsNewGame = true;
+        IsNewMatch = true;
         RoundResultsByPlayerId = new Dictionary<string, RoundResultVO>();
     }
 
@@ -53,7 +55,7 @@ public class MainModel : MonoBehaviour
         }
     }
 
-    public bool IsGameEnd()
+    public bool IsMatchEnd()
     {
         return GetUserResults().place > 0;
     }

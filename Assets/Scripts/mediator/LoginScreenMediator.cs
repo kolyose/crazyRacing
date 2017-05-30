@@ -20,7 +20,8 @@ public class LoginScreenMediator : BaseScreenMediator {
 
     public void OnPasswordEntered()
     {
-        Messenger<string, string>.Broadcast(ModelEvent.DATA_READY, tfLogin.text, tfPassword.text);
+        //TODO: dispatch the event after corresponding button clicked
+        Messenger<string, string>.Broadcast(ModelEvent.LOGIN_INPUT, tfLogin.text, tfPassword.text);
     }
 
     public override ScreenID GetScreenID()

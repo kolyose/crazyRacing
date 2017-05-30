@@ -32,9 +32,9 @@ public class GameBoard : MonoBehaviour, IGameBoard {
         if (camera == null) camera = GetComponent<PixelPerfectCamera>();
         if (charactersFactory == null) charactersFactory = GetComponent<ICharactersFactory>();
 
-        _charactersContainer = viewContainer.transform.FindChild("Characters").transform;
-        _tilesContainer = viewContainer.transform.FindChild("Tiles").transform;
-        _backgroundContainer = viewContainer.transform.FindChild("Background").transform;
+        _charactersContainer = viewContainer.transform.Find("Characters").transform;
+        _tilesContainer = viewContainer.transform.Find("Tiles").transform;
+        _backgroundContainer = viewContainer.transform.Find("Background").transform;
     }
 
     public void InitTiles()
