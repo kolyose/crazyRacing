@@ -7,6 +7,7 @@ public class GameStateMatchStart : BaseGameState
     public override void Entry()
     {
         base.Entry();
+        _manager.HideScreen(ScreenID.WAITING_FOR_PLAYERS);
         Messenger<RoundResultVO[]>.AddListener(ServerCommand.ROUND_RESULTS, OnRoundResults);
 
         _manager.PrepareModel();
@@ -17,23 +18,23 @@ public class GameStateMatchStart : BaseGameState
     private void OnRoundResults(RoundResultVO[] results)
     {
         Messenger<RoundResultVO[]>.RemoveListener(ServerCommand.ROUND_RESULTS, OnRoundResults); 
-       // Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
+        Messenger.AddListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
 
         _manager.SaveRoundResults(results);
         _manager.ProcessMilestones();
 
+        //TODO: fix the singleton
         Util.Instance.SetTimeout(OnTimeoutFinished, 2);
     }
 
     private void OnTimeoutFinished()
-    {
-        _manager.ZoomToFieldWidth();
-        _manager.ApplyState(_factory.GetStateSelectActions(_manager));
+    {        
+        _manager.ZoomToFieldWidth();       
     }
 
-    /*private void OnCharatersPositionsUpdateComplete()
+    private void OnCharatersPositionsUpdateComplete()
     {
         Messenger.RemoveListener(ViewEvent.COMPLETE, OnCharatersPositionsUpdateComplete);
-        _manager.SelectActions();
-    }*/
+        _manager.ApplyState(_factory.GetStateSelectActions(_manager));
+    }
 }

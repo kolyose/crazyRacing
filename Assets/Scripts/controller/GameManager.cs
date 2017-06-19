@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour {
 
     public void ApplyState(IGameState newState)
     {
+        Debug.Log("STATE: " + newState);
+
         if (_state != null)
         {
             _state.Exit();

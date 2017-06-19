@@ -1,6 +1,6 @@
-﻿using System;
+﻿using UnityEngine;
 
-public class GameStatesFactory : IGameStatesFactory
+public class GameStatesFactory : MonoBehaviour, IGameStatesFactory
 {
     public IGameState GetStateInitial(GameManager manager)
     {

@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class Util : MonoBehaviour
 {
-    public static Util Instance;
-
-    void Awake()
+    private static Util _instance;
+    public static Util Instance
     {
-        Instance = this;
-    }
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new Util();
+            }
+
+            return _instance;
+        }
+    }    
 
     public void SetTimeout(Action callback, float timeout)
     {
