@@ -22,9 +22,8 @@ public class GameStateMatchStart : BaseGameState
 
         _manager.SaveRoundResults(results);
         _manager.ProcessMilestones();
-
-        //TODO: fix the singleton
-        Util.Instance.SetTimeout(OnTimeoutFinished, 2);
+        
+        Util.Instance.SetTimeout(OnTimeoutFinished, 0.3f);
     }
 
     private void OnTimeoutFinished()

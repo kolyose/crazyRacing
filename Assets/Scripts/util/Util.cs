@@ -12,7 +12,8 @@ public class Util : MonoBehaviour
         {
             if (_instance == null)
             {
-                _instance = new Util();
+                GameObject go = new GameObject();
+                _instance = go.AddComponent<Util>();
             }
 
             return _instance;
