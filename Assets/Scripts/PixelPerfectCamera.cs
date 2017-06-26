@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PixelPerfectCamera : MonoBehaviour {
@@ -19,9 +20,12 @@ public class PixelPerfectCamera : MonoBehaviour {
         }
     }
 
+    private Text DEBUG;
+
     void Awake() 
     {
         if (mainModel == null) mainModel = GetComponent<MainModel>();
+        //DEBUG = GameObject.Find("DEBUG").GetComponent<Text>();
     }
 
     public void UpdateSettings()
@@ -111,13 +115,15 @@ public class PixelPerfectCamera : MonoBehaviour {
 
         if (totalDistance == 0) yield break;
 
-        for (float step = totalDistance / smoothingSpeed, remainingDistance = step; remainingDistance <= totalDistance; remainingDistance += step)
+        for (float step = totalDistance / smoothingSpeed, passedDistance = step; passedDistance <= totalDistance; passedDistance += step)
         {
-            float percentage = remainingDistance / totalDistance;
+            float percentage = passedDistance / totalDistance;
             Vector3 lerpedPosition = Vector3.Lerp(camera.transform.position, newPosition, percentage);
             Vector3 clampedPosition = ClampCameraPosition(lerpedPosition);
-            camera.transform.position = clampedPosition;      
+            camera.transform.position = clampedPosition;
             yield return null;
         }
+
+        camera.transform.position = ClampCameraPosition(newPosition);
     }
 }
