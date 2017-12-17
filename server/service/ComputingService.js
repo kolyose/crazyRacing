@@ -3,6 +3,7 @@ import {
   MILESTONE_TYPE_BLOCKED,
   MILESTONE_TYPE_MOVEMENT,
   MILESTONE_TYPE_BOOST,
+  MILESTONE_TYPE_SUPERPOWER,
 } from './model/BaseMilestoneVO';
 import milestonesFactory from './model/MilestonesFactory';
 import Debug from './../debug';
@@ -42,7 +43,7 @@ export default function(data) {
     let processedPlayers = [];
     // calculating milestones until all players complete their distances
     while (getRemainingDistanceSum(data) > 0) {
-      //1st STAGE:
+      //1st STAGE - BOOST:
       //we need to grab only BOOSTing players by priority: from the forward player of top racetrack
       for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
         for (let racetrackIndex = FIELD_WIDTH - 1; racetrackIndex > -1; racetrackIndex--) {
@@ -72,7 +73,35 @@ export default function(data) {
 
       processedPlayers = [];
 
-      //2nd STAGE:
+      //2nd STAGE - SUPERPOWER:
+      //now we need to grab all players by the same priority
+      for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
+        for (let racetrackIndex = FIELD_WIDTH - 1; racetrackIndex > -1; racetrackIndex--) {
+          let playerId = slotsPerRacetrack[racetrackIndex][slotIndex];
+          //if there is no player at current slot
+          //or the player has boost applied this round (meaning he couldn't apply superpower the same time)
+          //or the player hasn't superpower applied
+          //then check next slot
+          if (!playerId || data[playerId].actions.boost || !data[playerId].actions.superpower)
+            continue;
+
+          //if player found had been already processed in recent iteration we need to skip him
+          if (~processedPlayers.indexOf(playerId)) continue;
+
+          //In other case we need to process the superpower
+          //TODO: add logic
+          switch (data[playerId].actions.superpower.type) {
+            default:
+              break;
+          }
+
+          processedPlayers.push(playerId);
+        }
+      }
+
+      processedPlayers = [];
+
+      //3rd STAGE - MOVEMENT:
       //now we need to grab all players (including previously boosted ones) by the same priority
       for (let slotIndex = FIELD_LENGTH - 1; slotIndex > -1; slotIndex--) {
         for (let racetrackIndex = FIELD_WIDTH - 1; racetrackIndex > -1; racetrackIndex--) {
